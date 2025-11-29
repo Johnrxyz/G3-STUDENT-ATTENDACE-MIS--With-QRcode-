@@ -72,6 +72,12 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
+<<<<<<< HEAD
+=======
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+]
+>>>>>>> 87e87b432c08368d212f41e8e4be5a3ab9a794b2
 
 ROOT_URLCONF = 'backend.urls'
 
