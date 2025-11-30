@@ -1,9 +1,4 @@
-/* src/index.css */
 
-/* 1. Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Poppins:wght@300;400;600&family=Readex+Pro:wght@300;400;600&display=swap');
-
-/* 2. Define Global Variables */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&family=Readex+Pro:wght@300;400;500;600&display=swap');
 
 :root {
@@ -47,6 +42,7 @@ h5,
 h6 {
   font-family: var(--font-montserrat);
   font-weight: 600;
+  margin-bottom: 0.5rem;
 }
 
 button {
@@ -59,9 +55,9 @@ button {
 a {
   text-decoration: none;
   color: inherit;
+  transition: color 0.2s ease;
 }
 
-/* Utility Classes */
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -72,4 +68,13 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.text-primary {
+  color: var(--primary-blue);
+}
+
+.bg-primary {
+  background-color: var(--primary-blue);
+  color: var(--white);
 }

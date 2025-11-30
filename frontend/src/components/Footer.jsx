@@ -50,7 +50,7 @@ const Footer = () => {
                     <div className="social-icon"><Facebook size={16} /></div>
                     <div className="social-icon"><Twitter size={16} /></div>
                 </div>
-            
+
                 <div className="brand-credit">
                     A product of <span style={{ fontWeight: 'bold', color: 'white' }}>AttendEase</span>
                 </div>
