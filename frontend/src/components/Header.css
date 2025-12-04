@@ -1,0 +1,88 @@
+.header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 1.5rem 3rem;
+    background-color: white;
+    position: relative;
+    z-index: 20;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #E0E7FF;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-weight: 700;
+    color: var(--dark-text);
+    font-size: 1rem;
+    line-height: 1.2;
+}
+
+.user-role {
+    font-size: 0.85rem;
+    color: var(--gray-text);
+}
+
+.notification-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    padding: 0.5rem;
+    color: var(--dark-text);
+    transition: color 0.2s ease;
+}
+
+.notification-btn:hover {
+    color: var(--primary-blue);
+}
+
+.notification-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 8px;
+    height: 8px;
+    background-color: #FF5252;
+    border-radius: 50%;
+    border: 1px solid white;
+}
+
+.header-logout-btn {
+    background-color: #5465FF;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-left: 1rem;
+}
+
+.header-logout-btn:hover {
+    background-color: #4050D8;
+}

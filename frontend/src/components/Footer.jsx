@@ -1,46 +1,66 @@
-import React from "react";
-import "./Footer.css";
+import React from 'react';
+import { ScanLine, Facebook, Twitter, Linkedin, ArrowRight } from 'lucide-react';
+import './Footer.css';
 
-export default function Footer() {
-  return (
-    <footer className="footer-container">
-      <div className="footer-content">
-        <div className="footer-left">
-          <h3>Blaze Academy</h3>
-          <p>+1 (065) 662 12 87</p>
-          <p>support@domain.com</p>
-          <div className="social-icons">
-            <i className="icon">in</i>
-            <i className="icon">f</i>
-            <i className="icon">tw</i>
-          </div>
-        </div>
+const Footer = () => {
+    return (
+        <footer className="footer">
+            <div className="footer-content">
+                <div className="footer-brand">
+                    <div className="footer-logo">
+                        <ScanLine size={28} color="white" strokeWidth={2.5} />
+                        <span className="footer-logo-text">AttendEase</span>
+                    </div>
+                    <div className="contact-info">
+                        <p>+1 (7635) 547-12-97</p>
+                        <p>support@personal.com</p>
+                    </div>
+                </div>
 
-        <div className="footer-links">
-          <div>
-            <h4>Quick Links</h4>
-            <p>Product</p>
-            <p>Information</p>
-          </div>
-          <div>
-            <h4>Company</h4>
-            <p>Edu/Media</p>
-          </div>
-        </div>
+                <div className="footer-column">
+                    <h4 className="column-title">Quick Links</h4>
+                    <ul className="footer-links">
+                        <li><a href="#" className="footer-link">Product</a></li>
+                        <li><a href="#" className="footer-link">Information</a></li>
+                    </ul>
+                </div>
 
-        <div className="footer-subscribe">
-          <h4>Subscribe</h4>
-          <div className="subscribe-box">
-            <input type="email" placeholder="Get product updates" />
-            <button>→</button>
-          </div>
-        </div>
-      </div>
+                <div className="footer-column">
+                    <h4 className="column-title">&nbsp;</h4>
+                    <ul className="footer-links">
+                        <li><a href="#" className="footer-link">Company</a></li>
+                        <li><a href="#" className="footer-link">Edu Media</a></li>
+                    </ul>
+                </div>
+                <div className="footer-column">
+                </div>
+                <div className="footer-column subscribe-section">
+                    <h4 className="column-title">Subscribe</h4>
+                    <div className="subscribe-form">
+                        <input type="email" placeholder="Get product updates" className="subscribe-input" />
+                        <button className="subscribe-btn">
+                            <ArrowRight size={20} color="white" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div className="footer-bottom">
+                <div className="social-icons">
+                    <div className="social-icon"><Linkedin size={16} /></div>
+                    <div className="social-icon"><Facebook size={16} /></div>
+                    <div className="social-icon"><Twitter size={16} /></div>
+                </div>
 
-      <div className="footer-bottom">
-        <p>© 2023 Da Media. All rights reserved</p>
-        <p>A product of Blaze Academy</p>
-      </div>
-    </footer>
-  );
-}
+                <div className="brand-credit">
+                    A product of <span style={{ fontWeight: 'bold', color: 'white' }}>AttendEase</span>
+                </div>
+
+                <div className="copyright">
+                    © 2025 Edu Media. All rights reserved.
+                </div>
+            </div>
+        </footer>
+    );
+};
+
+export default Footer;

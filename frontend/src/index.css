@@ -1,0 +1,80 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&family=Readex+Pro:wght@300;400;500;600&display=swap');
+
+:root {
+  /* Color Palette */
+  --primary-blue: #5465FF;
+  --secondary-blue: #788BFF;
+  --light-blue-1: #9BB1FF;
+  --light-blue-2: #BFD7FF;
+  --light-blue-3: #E2FDFF;
+  --white: #FFFFFF;
+  --dark-text: #1A1A1A;
+  --gray-text: #666666;
+  --bg-color: #F5F7FA;
+
+  /* Fonts */
+  --font-montserrat: 'Montserrat', sans-serif;
+  --font-poppins: 'Poppins', sans-serif;
+  --font-readex: 'Readex Pro', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-poppins);
+  background-color: var(--bg-color);
+  color: var(--dark-text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-montserrat);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+button {
+  font-family: var(--font-readex);
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.2s ease;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-primary {
+  color: var(--primary-blue);
+}
+
+.bg-primary {
+  background-color: var(--primary-blue);
+  color: var(--white);
+}
