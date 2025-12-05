@@ -40,6 +40,24 @@ const ClassList = () => {
             room: 'Lecture Hall A',
             students: 50,
             section: '3A'
+        },
+        {
+            id: 5,
+            code: 'IT105',
+            name: 'Operating Systems',
+            schedule: 'Tue / Thu 4:00 PM - 5:30 PM',
+            room: 'Lab 2',
+            students: 40,
+            section: '3A'
+        },
+        {
+            id: 6,
+            code: 'IT106',
+            name: 'Networking 1',
+            schedule: 'Fri 1:00 PM - 4:00 PM',
+            room: 'Lab 4',
+            students: 35,
+            section: '3B'
         }
     ];
 
@@ -78,14 +96,14 @@ const ClassList = () => {
                         </div>
 
                         <div className="card-actions">
-                            <Link to="/teacher/generate-qr" className="btn-outline">
+                            <Link to={`/teacher/generate-qr/${cls.id}`} className="btn-outline">
                                 <QrCode size={18} />
                                 QR Code
                             </Link>
-                            <button className="btn-primary">
+                            <Link to={`/teacher/classes/${cls.id}`} className="btn-primary" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                 View Class
                                 <ArrowRight size={18} />
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 ))}

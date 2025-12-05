@@ -1,0 +1,117 @@
+/* Student Layout - Copied from Teacher dark blue design */
+.student-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #F5F7FA;
+}
+
+.layout-body {
+    display: flex;
+    flex: 1;
+    position: relative;
+}
+
+.sidebar {
+    width: 300px;
+    height: 100vh;
+    background-color: #050C44;
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    padding: 2.5rem 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo-text {
+    font-family: var(--font-montserrat);
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: white;
+}
+
+.nav-menu {
+    flex: 1;
+    padding: 2rem 1.5rem;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.2s ease;
+    font-family: var(--font-poppins);
+    font-weight: 500;
+    text-decoration: none;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.nav-item.active {
+    color: var(--white);
+    background-color: var(--primary-blue);
+}
+
+.nav-item:hover:not(.active) {
+    color: var(--white);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background-color: #F5F7FA;
+    overflow-x: hidden;
+}
+
+/* Background wave */
+.main-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 400px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23D6EFFF' fill-opacity='1' d='M0,160L80,170.7C160,181,320,203,480,197.3C640,192,800,160,960,149.3C1120,139,1280,149,1360,154.7L1440,160L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z'%3E%3C/path%3E%3C/svg%3E");
+    background-size: cover;
+    background-repeat: no-repeat;
+    z-index: 0;
+}
+
+.content-wrapper {
+    flex: 1;
+    padding: 2rem;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+}

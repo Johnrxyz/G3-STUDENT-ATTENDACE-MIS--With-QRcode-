@@ -1,3 +1,14 @@
+:root {
+    --nav: #0E0E52;
+    --nav: #192BC2;
+    --nav: #5465FF;
+    --nav: #788BFF;
+    --nav: #9BB1FF;
+    --nav: #BFD7FF;
+    --nav: #FFFFFF;
+    --footer: #5465FF;
+}
+
 .qr-page {
     width: 100%;
     max-width: 1600px;
@@ -55,6 +66,7 @@
 
 .datetime-text {
     font-weight: 600;
+    font-size: 0.90rem;
 }
 
 .section-label {
@@ -65,8 +77,8 @@
 }
 
 .subject-list {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-direction: column;
     gap: 1.5rem;
 }
 
@@ -78,8 +90,9 @@
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem;
     position: relative;
 }
 
@@ -95,13 +108,13 @@
 }
 
 .subject-code {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 700;
     color: var(--primary-blue);
     background-color: rgba(84, 101, 255, 0.1);
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    align-self: flex-start;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    white-space: nowrap;
 }
 
 .subject-name {
@@ -122,7 +135,7 @@
 }
 
 .qr-container {
-    padding: 2.5rem;
+    padding: 2rem;
     background-color: white;
     border-radius: 32px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
@@ -162,8 +175,8 @@
 }
 
 .placeholder-icon {
-    width: 350px;
-    height: 350px;
+    width: 400px;
+    height: 400px;
     background-color: #F8FAFC;
     border-radius: 32px;
     display: flex;
@@ -174,4 +187,69 @@
 .placeholder-text {
     font-size: 1.2rem;
     font-weight: 500;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .qr-grid {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 2rem;
+        padding: 2rem;
+    }
+
+    .display-section {
+        border-left: none;
+        padding-left: 0;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #F0F0F0;
+        width: 100%;
+    }
+
+    .controls-section {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .qr-page {
+        padding: 1rem;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .qr-grid {
+        padding: 1.5rem;
+        border-radius: 24px;
+    }
+
+    .datetime-display {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+        padding: 1rem;
+    }
+
+    .qr-container {
+        padding: 1.5rem;
+    }
+
+    .qr-container canvas {
+        width: 100% !important;
+        height: auto !important;
+        max-width: 250px;
+    }
+
+    .timer-value {
+        font-size: 3rem;
+    }
+
+    .placeholder-icon {
+        width: 100%;
+        max-width: 300px;
+        height: 300px;
+    }
 }

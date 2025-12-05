@@ -17,7 +17,7 @@
     font-size: 2rem;
     font-weight: 700;
     color: #050C44;
-    margin-bottom: 0.5rem;
+    margin-bottom: 4rem;
 }
 
 .page-subtitle {
@@ -193,7 +193,7 @@
 
 .subject-code {
     font-size: 0.85rem;
-    color: #64748B;
+    color: #64748B;     
 }
 
 .time-cell {
@@ -476,4 +476,103 @@
     color: #94A3B8;
     padding: 2rem;
     font-style: italic;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .history-container {
+        gap: 1.5rem;
+    }
+
+    .history-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .header-actions {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .view-toggle {
+        width: 100%;
+    }
+
+    .toggle-btn {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .export-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* List View Responsive */
+    .filters-bar {
+        flex-direction: column;
+    }
+
+    .search-wrapper {
+        max-width: 100%;
+    }
+
+    .filter-group {
+        flex-direction: column;
+    }
+
+    .filter-btn {
+        justify-content: center;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .history-table th,
+    .history-table td {
+        padding: 0.75rem 1rem;
+        white-space: nowrap;
+    }
+
+    /* Calendar View Responsive */
+    .calendar-view {
+        grid-template-columns: 1fr;
+        height: auto;
+        gap: 1.5rem;
+    }
+
+    .calendar-container {
+        padding: 1rem;
+    }
+
+    .calendar-day {
+        min-height: 60px;
+    }
+
+    .day-details-panel {
+        max-height: 500px;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-title {
+        font-size: 1.5rem;
+    }
+
+    .calendar-day {
+        min-height: 50px;
+        padding: 0.25rem;
+    }
+
+    .day-number {
+        font-size: 0.8rem;
+    }
+
+    .class-dot {
+        width: 6px;
+        height: 6px;
+    }
 }
