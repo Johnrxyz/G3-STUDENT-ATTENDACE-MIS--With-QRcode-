@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from users.models import CustomUser, StudentProfile, Course, Section, Program, Department, ClassSchedule
-from attendace.models import AttendanceSession, AttendanceRecord
+from users.models import CustomUser, StudentProfile
+from attendance.models import AttendanceSession, AttendanceRecord
 from .serializers import (
         UserSerializer, 
         StudentProfileSerializer, 
@@ -9,7 +9,7 @@ from .serializers import (
         SectionSerializer, 
         ProgramSerializer, 
         DepartmentSerializer, 
-        ScheduleSerializer, 
+        ClassScheduleSerializer, 
         AttendanceSessionSerializer, 
         AttendanceRecordSerializer)
 
@@ -47,7 +47,7 @@ class DepartmentViewSet(viewsets.ModelViewSet):
 
 class ClassScheduleViewSet(viewsets.ModelViewSet):
     queryset = ClassSchedule.objects.all()
-    serializer_class = ScheduleSerializer
+    serializer_class = ClassScheduleSerializer
     permission_classes = [AllowAny]
 
 class AttendanceSessionViewSet(viewsets.ModelViewSet):
