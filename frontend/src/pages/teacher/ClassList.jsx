@@ -1,65 +1,23 @@
 import React from 'react';
 import { Clock, MapPin, Users, QrCode, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import useTeacher from '../../hooks/useTeacher';
 import './ClassList.css';
 
 const ClassList = () => {
-    const classes = [
-        {
-            id: 1,
-            code: 'IT101',
-            name: 'Introduction to Programming',
-            schedule: 'Mon / Wed 10:00 AM - 11:30 AM',
-            room: 'Lab 3',
-            students: 42,
-            section: '4A'
-        },
-        {
-            id: 2,
-            code: 'IT102',
-            name: 'Data Structures and Algorithms',
-            schedule: 'Tue / Thu 1:00 PM - 2:30 PM',
-            room: 'Lab 1',
-            students: 38,
-            section: '3B'
-        },
-        {
-            id: 3,
-            code: 'IT103',
-            name: 'Web Development',
-            schedule: 'Fri 9:00 AM - 12:00 PM',
-            room: 'Lab 5',
-            students: 45,
-            section: '4A'
-        },
-        {
-            id: 4,
-            code: 'IT104',
-            name: 'Database Management Systems',
-            schedule: 'Mon / Wed 2:00 PM - 3:30 PM',
-            room: 'Lecture Hall A',
-            students: 50,
-            section: '3A'
-        },
-        {
-            id: 5,
-            code: 'IT105',
-            name: 'Operating Systems',
-            schedule: 'Tue / Thu 4:00 PM - 5:30 PM',
-            room: 'Lab 2',
-            students: 40,
-            section: '3A'
-        },
-        {
-            id: 6,
-            code: 'IT106',
-            name: 'Networking 1',
-            schedule: 'Fri 1:00 PM - 4:00 PM',
-            room: 'Lab 4',
-            students: 35,
-            section: '3B'
-        }
-    ];
+    const { schedules, loading } = useTeacher();
+
+    if (loading) return <div className="p-8 text-center">Loading classes...</div>;
+
+    const classes = schedules.map(sch => ({
+        id: sch.id,
+        code: sch.course_code || 'N/A', // Added field
+        name: sch.course_name || 'Unknown Course',
+        schedule: `${sch.day_names.join(', ')} ${sch.start_time}-${sch.end_time}`,
+        room: sch.room,
+        students: sch.student_count || 0, // Added field
+        section: sch.section_name
+    }));
 
     return (
         <div className="class-list-page">

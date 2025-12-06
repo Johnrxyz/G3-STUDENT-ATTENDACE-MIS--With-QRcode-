@@ -1,13 +1,16 @@
 import React from 'react';
 import { Bell } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 import './Header.css';
 
 const Header = () => {
+    const { auth, logout } = useAuth();
     const navigate = useNavigate();
-    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    const currentUser = auth.user || {};
 
     const handleLogout = () => {
+        logout();
         navigate('/');
     };
 
@@ -21,7 +24,7 @@ const Header = () => {
                         className="avatar"
                     />
                     <div className="user-details">
-                        <span className="user-name">{currentUser.name || 'User'}</span>
+                        <span className="user-name">{currentUser.full_name || currentUser.username || 'User'}</span>
                         <span className="user-role">
                             {currentUser.role ? currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1) : 'Student'}
                         </span>

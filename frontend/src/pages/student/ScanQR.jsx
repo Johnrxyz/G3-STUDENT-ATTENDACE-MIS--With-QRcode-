@@ -1,33 +1,49 @@
 import React, { useState } from 'react';
+import { QrReader } from 'react-qr-reader';
 import { Camera, CheckCircle, XCircle, QrCode } from 'lucide-react';
+import { scanAttendance } from '../../api/attendance';
 import './ScanQR.css';
 
 const ScanQR = () => {
     const [scanning, setScanning] = useState(false);
     const [scanResult, setScanResult] = useState(null);
-    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    const [error, setError] = useState(null);
+
+    const handleResult = async (result, error) => {
+        if (!!result) {
+            setScanning(false);
+            try {
+                // Call API
+                const response = await scanAttendance(result?.text);
+                setScanResult({
+                    success: true,
+                    data: response.data,
+                    text: result?.text
+                });
+            } catch (err) {
+                setScanning(false);
+                setError(err.response?.data?.error || "Scanning failed");
+                setScanResult({
+                    success: false,
+                    error: err.response?.data?.error
+                });
+            }
+        }
+        if (!!error) {
+            console.info(error);
+        }
+    };
 
     const handleStartScan = () => {
         setScanning(true);
         setScanResult(null);
-
-        // Simulate QR scan after 2 seconds
-        setTimeout(() => {
-            // Simulate successful scan
-            setScanResult({
-                success: true,
-                className: 'Mathematics 101',
-                teacher: 'Prof. John Smith',
-                time: new Date().toLocaleTimeString(),
-                date: new Date().toLocaleDateString()
-            });
-            setScanning(false);
-        }, 2000);
+        setError(null);
     };
 
     const handleReset = () => {
         setScanResult(null);
         setScanning(false);
+        setError(null);
     };
 
     return (
@@ -56,15 +72,14 @@ const ScanQR = () => {
                     {scanning && (
                         <div className="scan-active">
                             <div className="scanner-frame">
-                                <div className="scanner-overlay">
-                                    <div className="scanner-line"></div>
-                                    <div className="corner top-left"></div>
-                                    <div className="corner top-right"></div>
-                                    <div className="corner bottom-left"></div>
-                                    <div className="corner bottom-right"></div>
-                                </div>
+                                <QrReader
+                                    onResult={handleResult}
+                                    constraints={{ facingMode: 'environment' }}
+                                    style={{ width: '100%' }}
+                                />
+                                <p className="scanning-text">Scanning...</p>
                             </div>
-                            <p className="scanning-text">Scanning...</p>
+                            <button className="reset-button" onClick={() => setScanning(false)}>Cancel</button>
                         </div>
                     )}
 
@@ -81,23 +96,13 @@ const ScanQR = () => {
 
                             {scanResult.success && (
                                 <div className="result-details">
-                                    <div className="detail-item">
-                                        <span className="detail-label">Class:</span>
-                                        <span className="detail-value">{scanResult.className}</span>
-                                    </div>
-                                    <div className="detail-item">
-                                        <span className="detail-label">Teacher:</span>
-                                        <span className="detail-value">{scanResult.teacher}</span>
-                                    </div>
-                                    <div className="detail-item">
-                                        <span className="detail-label">Time:</span>
-                                        <span className="detail-value">{scanResult.time}</span>
-                                    </div>
-                                    <div className="detail-item">
-                                        <span className="detail-label">Date:</span>
-                                        <span className="detail-value">{scanResult.date}</span>
-                                    </div>
+                                    <p className="success-msg">{scanResult.data?.status}</p>
+                                    <p className="timestamp">{new Date().toLocaleString()}</p>
                                 </div>
+                            )}
+
+                            {!scanResult.success && (
+                                <p className="error-msg">{scanResult.error}</p>
                             )}
 
                             <button className="reset-button" onClick={handleReset}>
@@ -105,43 +110,6 @@ const ScanQR = () => {
                             </button>
                         </div>
                     )}
-                </div>
-
-                {/* Recent Scans */}
-                <div className="recent-scans">
-                    <h3>Recent Attendance</h3>
-                    <div className="scans-list">
-                        <div className="scan-item">
-                            <div className="scan-info">
-                                <h4>Mathematics 101</h4>
-                                <p>Prof. John Smith</p>
-                            </div>
-                            <div className="scan-meta">
-                                <span className="scan-time">9:00 AM</span>
-                                <span className="scan-status success">Present</span>
-                            </div>
-                        </div>
-                        <div className="scan-item">
-                            <div className="scan-info">
-                                <h4>Computer Science</h4>
-                                <p>Prof. Sarah Johnson</p>
-                            </div>
-                            <div className="scan-meta">
-                                <span className="scan-time">11:00 AM</span>
-                                <span className="scan-status success">Present</span>
-                            </div>
-                        </div>
-                        <div className="scan-item">
-                            <div className="scan-info">
-                                <h4>Physics Lab</h4>
-                                <p>Prof. Michael Brown</p>
-                            </div>
-                            <div className="scan-meta">
-                                <span className="scan-time">2:00 PM</span>
-                                <span className="scan-status pending">Pending</span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

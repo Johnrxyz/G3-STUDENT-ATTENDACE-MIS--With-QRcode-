@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 import './Login.css';
 
 const Login = () => {
@@ -16,55 +17,42 @@ const Login = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const { login } = useAuth();
+    const [error, setError] = useState('');
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
 
-        // Get users from localStorage
-        let users = JSON.parse(localStorage.getItem('users') || '[]');
+        try {
+            await login(formData.username, formData.password);
 
-        // If no users exist, create a default test user
-        if (users.length === 0) {
-            const defaultUser = {
-                name: 'Test Teacher',
-                email: 'teacher@test.com',
-                password: 'password123',
-                role: 'teacher',
-                userId: 'T001',
-                jobPosition: 'Teacher',
-                contactNo: '1234567890'
-            };
-            users.push(defaultUser);
-            localStorage.setItem('users', JSON.stringify(users));
-            alert('No users found. Created default test account:\n\nUsername: teacher@test.com\nPassword: password123\n\nPlease try logging in again!');
-            return;
-        }
+            // Redirect is handled inside login? No, login returns true.
+            // We need to check role to redirect.
+            // But we can get auth state from hook or decoding here.
+            // Since login updates context asynchronously, we might need to wait or rely on simple logic.
+            // Let's decode or simply redirect to a default and let ProtectedRoute handle it?
+            // Better: Get role effectively.
 
-        // Find user by email/username and password
-        const user = users.find(u =>
-            (u.email === formData.username || u.userId === formData.username) &&
-            u.password === formData.password
-        );
+            const token = localStorage.getItem('access');
+            // Quick decode for redirect
+            if (token) {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                const user = JSON.parse(jsonPayload);
 
-        if (user) {
-            // Save current user to localStorage
-            localStorage.setItem('currentUser', JSON.stringify(user));
-
-            // Redirect based on role
-            switch (user.role) {
-                case 'teacher':
-                    navigate('/teacher');
-                    break;
-                case 'student':
-                    navigate('/student');
-                    break;
-                case 'admin':
-                    navigate('/admin');
-                    break;
-                default:
-                    navigate('/teacher'); // Default fallback
+                if (user.role === 'teacher' || user.role === 'admin') navigate('/teacher/dashboard');
+                else if (user.role === 'student') navigate('/student/dashboard');
+                else {
+                    console.warn('Unknown role:', user.role);
+                    navigate('/');
+                }
             }
-        } else {
-            alert('Invalid credentials!\n\nDefault test account:\nUsername: teacher@test.com\nPassword: password123\n\nOr register a new account.');
+        } catch (err) {
+            setError('Invalid credentials! Please try again.');
         }
     };
 

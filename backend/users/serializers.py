@@ -1,8 +1,22 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import StudentProfile
 
 User = get_user_model()
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['role'] = user.role
+        token['username'] = user.username
+        token['email'] = user.email
+        token['full_name'] = user.get_full_name()
+        
+        return token
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)

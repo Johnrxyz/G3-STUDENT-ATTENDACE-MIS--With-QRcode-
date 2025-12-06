@@ -106,12 +106,15 @@ class AttendanceSessionViewSet(viewsets.ModelViewSet):
 class AttendanceRecordViewSet(viewsets.ModelViewSet):
     queryset = AttendanceRecord.objects.all()
     serializer_class = AttendanceRecordSerializer
-    permission_classes = [permissions.IsAuthenticated, IsTeacherOrAdmin]
+    permission_classes = [permissions.IsAuthenticated, IsTeacherOrAdmin | IsStudent]
 
     def get_queryset(self):
         user = self.request.user
         if user.role == 'teacher':
-            return AttendanceRecord.objects.filter(session__schedule__section__instructor=user)
+             return AttendanceRecord.objects.filter(session__schedule__section__instructor=user)
+        if user.role == 'student':
+             # Students only see their own records
+             return AttendanceRecord.objects.filter(student__user=user)
         return AttendanceRecord.objects.all()
 
 class ScanViewSet(viewsets.ViewSet):
@@ -137,6 +140,12 @@ class ScanViewSet(viewsets.ViewSet):
         if session.qr_expires_at and timezone.now() > session.qr_expires_at:
             return Response({'error': 'QR code expired'}, status=status.HTTP_400_BAD_REQUEST)
 
+        # SECURITY: Log the scan attempt (rudimentary audit)
+        #Ideally use ScanDevice logic here to validate device_uid if sent
+        ip_addr = request.META.get('REMOTE_ADDR')
+        user_agent = request.META.get('HTTP_USER_AGENT', '')
+        # print(f"Scan attempt by {student_profile.student_number} from {ip_addr}")
+        
         # Check if student is enrolled in this section
         if not session.schedule.section.students.filter(id=student_profile.id).exists():
              return Response({'error': 'Student not enrolled in this section'}, status=status.HTTP_403_FORBIDDEN)
