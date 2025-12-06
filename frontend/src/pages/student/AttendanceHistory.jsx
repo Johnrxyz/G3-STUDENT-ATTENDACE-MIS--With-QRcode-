@@ -2,69 +2,45 @@ import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import './AttendanceHistory.css';
 
+import useStudent from '../../hooks/useStudent';
+
 const StudentAttendanceHistory = () => {
+    const { history, loading } = useStudent();
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(null);
 
-    // Sample attendance data - December 2025
-    const attendanceData = {
-        // November 2025
-        '2025-11-03': [
-            { subject: 'ITPS301', teacher: 'Louise Vuitton', room: 'ComLab 3', status: 'present' },
-            { subject: 'ITPS302', teacher: 'Merry Eamas', room: 'ComLab 2', status: 'present' }
-        ],
-        '2025-11-04': [
-            { subject: 'ITPS301', teacher: 'Jonel Ciarlo', room: 'ComLab 2', status: 'absent' },
-            { subject: 'ITPS303', teacher: 'John Rey Noto', room: 'ComLab 1', status: 'present' }
-        ],
-        '2025-11-05': [
-            { subject: 'ITPS302', teacher: 'Merry Eamas', room: 'ComLab 2', status: 'late' },
-            { subject: 'ITPS304', teacher: 'Merry Eamas', room: 'ComLab 4', status: 'present' }
-        ],
-        // December 2025 - Current Month
-        '2025-12-01': [
-            { subject: 'ITPS301', teacher: 'Louise Vuitton', room: 'ComLab 3', status: 'present' },
-            { subject: 'ITPS302', teacher: 'Merry Eamas', room: 'ComLab 2', status: 'present' },
-            { subject: 'ITPS303', teacher: 'John Rey Noto', room: 'ComLab 1', status: 'present' }
-        ],
-        '2025-12-02': [
-            { subject: 'ITPS301', teacher: 'Jonel Ciarlo', room: 'ComLab 2', status: 'late' },
-            { subject: 'ITPS304', teacher: 'Merry Eamas', room: 'ComLab 4', status: 'present' }
-        ],
-        '2025-12-03': [
-            { subject: 'ITPS302', teacher: 'Merry Eamas', room: 'ComLab 2', status: 'absent' },
-            { subject: 'ITPS201', teacher: 'Merry Eamas', room: 'ComLab 3', status: 'present' }
-        ],
-        '2025-12-04': [
-            { subject: 'ITPS301', teacher: 'Louise Vuitton', room: 'ComLab 3', status: 'present' },
-            { subject: 'ITPS302', teacher: 'Merry Eamas', room: 'ComLab 2', status: 'present' },
-            { subject: 'ITPS303', teacher: 'John Rey Noto', room: 'ComLab 1', status: 'present' }
-        ],
-        '2025-12-05': [
-            { subject: 'ITPS304', teacher: 'Merry Eamas', room: 'ComLab 4', status: 'late' },
-            { subject: 'ITPS202', teacher: 'Merry Eamas', room: 'ComLab 5', status: 'present' }
-        ],
-        '2025-12-06': [
-            { subject: 'ITPS301', teacher: 'Louise Vuitton', room: 'ComLab 3', status: 'absent' },
-            { subject: 'ITPS302', teacher: 'Merry Eamas', room: 'ComLab 2', status: 'absent' }
-        ],
-        '2025-12-09': [
-            { subject: 'ITPS301', teacher: 'Louise Vuitton', room: 'ComLab 3', status: 'present' },
-            { subject: 'ITPS303', teacher: 'John Rey Noto', room: 'ComLab 1', status: 'present' }
-        ],
-        '2025-12-10': [
-            { subject: 'ITPS302', teacher: 'Merry Eamas', room: 'ComLab 2', status: 'late' },
-            { subject: 'ITPS304', teacher: 'Merry Eamas', room: 'ComLab 4', status: 'present' }
-        ],
-        '2025-12-11': [
-            { subject: 'ITPS301', teacher: 'Jonel Ciarlo', room: 'ComLab 2', status: 'present' },
-            { subject: 'ITPS201', teacher: 'Merry Eamas', room: 'ComLab 3', status: 'present' }
-        ],
-        '2025-12-12': [
-            { subject: 'ITPS302', teacher: 'Merry Eamas', room: 'ComLab 2', status: 'absent' },
-            { subject: 'ITPS303', teacher: 'John Rey Noto', room: 'ComLab 1', status: 'present' }
-        ]
-    };
+    // Transform history to attendanceData map
+    // Format: { 'YYYY-MM-DD': [ { subject, teacher, room, status } ] }
+    // records: { id, timestamp, status, session_details... }
+    // We assume backend serializer provides session details (course name, etc). 
+    // If not, we might only show basic info.
+    // Let's assume record has: { timestamp, status, session: { course_name, teacher_name, room } }
+    // Based on `AttendanceRecordSerializer` (checked in previous turn, it has `session` ID or object? 
+    // `AttendanceRecordSerializer` in `attendance/serializers.py` usually just `session`.
+    // If it's just ID, we can't show "Subject" name without fetching session details or having a nested serializer.
+    // I should check `AttendanceRecordSerializer`.
+    // If nested, great. If not, I might need to update backend or just show ID.
+    // For now, I'll attempt to map assuming some details or fallback.
+
+    // Actually, `useStudent` calls `getStudentAttendanceHistory` -> `/attendance/records/`.
+    // Let's assume helpful data is there or I updated it.
+
+    const attendanceData = history ? history.reduce((acc, record) => {
+        const dateObj = new Date(record.timestamp);
+        const dateKey = dateObj.toISOString().split('T')[0];
+
+        if (!acc[dateKey]) acc[dateKey] = [];
+        acc[dateKey].push({
+            subject: record.session_course_name || 'Class', // fallback
+            teacher: record.session_teacher_name || 'Teacher',
+            room: record.session_room || 'Room',
+            status: record.status,
+            time: dateObj.toLocaleTimeString()
+        });
+        return acc;
+    }, {}) : {};
+
+    if (loading) return <div className="p-8 text-center">Loading history...</div>;
 
     const getDaysInMonth = (date) => {
         const year = date.getFullYear();

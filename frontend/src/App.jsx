@@ -16,35 +16,45 @@ import ScanQR from './pages/student/ScanQR';
 import ClassSchedule from './pages/student/ClassSchedule';
 import StudentAttendanceHistory from './pages/student/AttendanceHistory';
 import StudentProfile from './pages/student/StudentProfile';
+import ProtectedRoute from './components/ProtectedRoute';
+import { AuthProvider } from './context/AuthContext';
 import './App.css';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/teacher" element={<TeacherNav />}>
-          <Route index element={<Navigate to="generate-qr" replace />} />
-          <Route path="generate-qr" element={<GenerateQR />} />
-          <Route path="generate-qr/:id" element={<GenerateQR />} />
-          <Route path="live-attendance" element={<LiveAttendance />} />
-          <Route path="classes" element={<ClassList />} />
-          <Route path="classes/:id" element={<StudentList />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="history" element={<AttendanceHistory />} />
-        </Route>
-        <Route path="/student" element={<StudentNav />}>
-          <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard" element={<StudentDashboard />} />
-          <Route path="scan-qr" element={<ScanQR />} />
-          <Route path="schedule" element={<ClassSchedule />} />
-          <Route path="history" element={<StudentAttendanceHistory />} />
-          <Route path="profile" element={<StudentProfile />} />
-        </Route>
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
+          <Route element={<ProtectedRoute allowedRoles={['teacher', 'admin']} />}>
+            <Route path="/teacher" element={<TeacherNav />}>
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="generate-qr" element={<GenerateQR />} />
+              <Route path="generate-qr/:id" element={<GenerateQR />} />
+              <Route path="live-attendance" element={<LiveAttendance />} />
+              <Route path="classes" element={<ClassList />} />
+              <Route path="classes/:id" element={<StudentList />} />
+              <Route path="history" element={<AttendanceHistory />} />
+            </Route>
+          </Route>
+
+          <Route element={<ProtectedRoute allowedRoles={['student']} />}>
+            <Route path="/student" element={<StudentNav />}>
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard" element={<StudentDashboard />} />
+              <Route path="scan-qr" element={<ScanQR />} />
+              <Route path="schedule" element={<ClassSchedule />} />
+              <Route path="history" element={<StudentAttendanceHistory />} />
+              <Route path="profile" element={<StudentProfile />} />
+            </Route>
+          </Route>
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 

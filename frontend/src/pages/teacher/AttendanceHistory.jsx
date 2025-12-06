@@ -2,18 +2,29 @@ import React, { useState } from 'react';
 import { Calendar as CalendarIcon, List, Filter, Download, ChevronLeft, ChevronRight, Search, Clock, Users, CheckCircle, XCircle } from 'lucide-react';
 import './AttendanceHistory.css';
 
+import useTeacher from '../../hooks/useTeacher';
+
 const AttendanceHistory = () => {
+    const { sessions, loading } = useTeacher();
     const [viewMode, setViewMode] = useState('list');
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(new Date());
 
-    const attendanceLogs = [
-        { id: 1, date: '2025-11-30', subject: 'Web Development', code: 'IT103', time: '10:30 AM', total: 45, present: 42, absent: 3, status: 'Completed' },
-        { id: 2, date: '2025-11-30', subject: 'Database Systems', code: 'IT104', time: '02:00 PM', total: 40, present: 38, absent: 2, status: 'In Progress' },
-        { id: 3, date: '2025-11-29', subject: 'Data Structures', code: 'IT102', time: '09:00 AM', total: 48, present: 45, absent: 3, status: 'Completed' },
-        { id: 4, date: '2025-11-29', subject: 'Operating Systems', code: 'IT105', time: '01:00 PM', total: 42, present: 40, absent: 2, status: 'Completed' },
-        { id: 5, date: '2025-11-28', subject: 'Networking 1', code: 'IT106', time: '11:00 AM', total: 38, present: 35, absent: 3, status: 'Completed' },
-    ];
+    if (loading) return <div className="p-8">Loading history...</div>;
+
+    if (loading) return <div className="p-8">Loading history...</div>;
+
+    const attendanceLogs = sessions.map(session => ({
+        id: session.id,
+        date: session.created_at || session.date, // 'YYYY-MM-DD'
+        subject: session.course_name || 'Class',
+        code: session.course_code || 'CODE',
+        time: new Date(session.created_at || session.started_at || session.date).toLocaleTimeString(),
+        total: session.total_students || 0,
+        present: session.present_count || 0,
+        absent: session.absent_count || 0,
+        status: session.closed_at ? 'Completed' : 'In Progress' // Check closed_at instead of is_active
+    }));
 
     const getDaysInMonth = (date) => {
         const year = date.getFullYear();

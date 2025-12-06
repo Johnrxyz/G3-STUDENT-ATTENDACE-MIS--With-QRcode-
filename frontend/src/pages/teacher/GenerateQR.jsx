@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { QRCodeCanvas } from 'qrcode.react';
-import { Clock, Calendar, RefreshCw, CheckCircle } from 'lucide-react';
+import { Clock, Calendar, RefreshCw, CheckCircle, Users, PlayCircle } from 'lucide-react';
+import useTeacher from '../../hooks/useTeacher';
+import { getSessionRecords, simulateScan } from '../../api/attendance';
 import './GenerateQR.css';
 
 const GenerateQR = () => {
@@ -10,17 +12,14 @@ const GenerateQR = () => {
     const [dateTime, setDateTime] = useState(new Date());
     const [isActive, setIsActive] = useState(false);
     const [timer, setTimer] = useState(120); // 2 minutes in seconds
-    const [qrData, setQrData] = useState('');
+    const [qrToken, setQrToken] = useState('');
 
-    // Mock Subjects
-    const subjects = [
-        { id: 1, name: 'Introduction to Programming', code: 'IT101' },
-        { id: 2, name: 'Data Structures and Algorithms', code: 'IT102' },
-        { id: 3, name: 'Web Development', code: 'IT103' },
-        { id: 4, name: 'Database Management Systems', code: 'IT104' },
-        { id: 5, name: 'Operating Systems', code: 'IT105' },
-        { id: 6, name: 'Networking 1', code: 'IT106' },
-    ];
+    // Live Attendance State
+    const [attendees, setAttendees] = useState([]);
+    const [simulating, setSimulating] = useState(false);
+
+    // Real data
+    const { schedules, sessions, handleOpenSession, handleCloseSession } = useTeacher();
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -29,42 +28,144 @@ const GenerateQR = () => {
         return () => clearInterval(interval);
     }, []);
 
+    // Restore state from active sessions
+    useEffect(() => {
+        if (!sessions || !schedules) return;
+
+        let targetSession = null;
+
+        // If ID param provided, try to find active session for this schedule
+        if (id) {
+            targetSession = sessions.find(s => s.schedule === parseInt(id) && !s.closed_at);
+            if (!targetSession && schedules.some(s => s.id === parseInt(id))) {
+                setSelectedSubjectId(parseInt(id));
+            }
+        }
+
+        // Auto-restore logic if manually selected or general restoration needed
+        if (!targetSession && selectedSubjectId) {
+            targetSession = sessions.find(s => s.schedule === selectedSubjectId && !s.closed_at);
+        }
+
+        if (targetSession) {
+            setSelectedSubjectId(targetSession.schedule);
+            setQrToken(targetSession.qr_token);
+            setIsActive(true);
+
+            if (targetSession.qr_expires_at) {
+                const expiry = new Date(targetSession.qr_expires_at);
+                const now = new Date();
+                const diff = Math.floor((expiry - now) / 1000);
+                setTimer(diff > 0 ? diff : 0);
+            }
+        }
+    }, [sessions, schedules, id, selectedSubjectId]);
+
+    // Timer logic - No auto-hide
     useEffect(() => {
         let interval;
         if (isActive && timer > 0) {
             interval = setInterval(() => {
                 setTimer((prev) => prev - 1);
             }, 1000);
-        } else if (timer === 0) {
-            setIsActive(false);
-            setTimer(120);
         }
         return () => clearInterval(interval);
     }, [isActive, timer]);
 
-    const handleSubjectClick = (subjectId) => {
-        setSelectedSubjectId(subjectId);
-
-        const data = JSON.stringify({
-            subjectId: subjectId,
-            timestamp: new Date().toISOString(),
-            validUntil: new Date(Date.now() + 2 * 60 * 1000).toISOString(),
-        });
-
-        setQrData(data);
-        setIsActive(true);
-        setTimer(120);
-    };
-
+    // Poll for Live Attendance
     useEffect(() => {
-        if (id) {
-            const subjectId = parseInt(id);
-            const subject = subjects.find(s => s.id === subjectId);
-            if (subject) {
-                handleSubjectClick(subjectId);
+        let pollInterval;
+        if (isActive && selectedSubjectId) {
+            const session = sessions?.find(s => s.schedule === selectedSubjectId && !s.closed_at);
+            if (session) {
+                // Initial fetch
+                fetchAttendees(session.id);
+                // Poll every 3 seconds
+                pollInterval = setInterval(() => fetchAttendees(session.id), 3000);
             }
         }
-    }, [id]);
+        return () => clearInterval(pollInterval);
+    }, [isActive, selectedSubjectId, sessions]);
+
+    const fetchAttendees = async (sessionId) => {
+        try {
+            const res = await getSessionRecords(sessionId);
+            setAttendees(res.data);
+        } catch (err) {
+            console.error("Failed to fetch attendees", err);
+        }
+    };
+
+    const handleSubjectClick = async (schedule) => {
+        setSelectedSubjectId(schedule.id);
+
+        // Check if session already active locally first
+        const existingSession = sessions?.find(s => s.schedule === schedule.id && !s.closed_at);
+        if (existingSession) {
+            setQrToken(existingSession.qr_token);
+            setIsActive(true);
+            if (existingSession.qr_expires_at) {
+                const expiry = new Date(existingSession.qr_expires_at);
+                const now = new Date();
+                const diff = Math.floor((expiry - now) / 1000);
+                setTimer(diff > 0 ? diff : 0);
+            }
+            return;
+        }
+
+        try {
+            const response = await handleOpenSession(schedule.id);
+            setQrToken(response.qr_token || response.id);
+            setIsActive(true);
+            setTimer(30 * 60);
+            setAttendees([]); // Reset attendees
+        } catch (err) {
+            console.error(err);
+            alert('Failed to open session: ' + (err.response?.data?.error || err.message));
+        }
+    };
+
+    const handleEndSession = async () => {
+        if (!selectedSubjectId) return;
+
+        const session = sessions?.find(s => s.schedule === selectedSubjectId && !s.closed_at);
+        if (session) {
+            try {
+                await handleCloseSession(session.id);
+            } catch (err) {
+                console.error(err);
+                alert("Failed to close session");
+                return;
+            }
+        }
+        setIsActive(false);
+        setQrToken('');
+        setTimer(0);
+        setSelectedSubjectId(null);
+        setAttendees([]);
+    };
+
+    const handleSimulateScan = async () => {
+        const session = sessions?.find(s => s.schedule === selectedSubjectId && !s.closed_at);
+        if (!session) return;
+
+        setSimulating(true);
+        try {
+            const res = await simulateScan(session.id);
+            if (res.data.student) {
+                // Toast or just let polling update
+                // console.log("Simulated scan for", res.data.student);
+                fetchAttendees(session.id); // Immediate refresh
+            } else {
+                alert(res.data.message);
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Simulation failed: " + (err.response?.data?.error || err.message));
+        } finally {
+            setSimulating(false);
+        }
+    };
 
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
@@ -106,43 +207,103 @@ const GenerateQR = () => {
                     </div>
 
                     <div>
-                        <h3 className="section-label">Select a Subject to Generate QR</h3>
+                        <h3 className="section-label">Select a Class to Generate QR</h3>
                         <div className="subject-list">
-                            {subjects.map((sub) => (
-                                <div
-                                    key={sub.id}
-                                    className={`subject-card ${selectedSubjectId === sub.id ? 'active' : ''}`}
-                                    onClick={() => handleSubjectClick(sub.id)}
-                                >
-                                    <span className="subject-code">{sub.code}</span>
-                                    <h4 className="subject-name">{sub.name}</h4>
-                                    {selectedSubjectId === sub.id && <CheckCircle size={20} color="var(--primary-blue)" style={{ marginLeft: 'auto' }} />}
-                                </div>
-                            ))}
+                            {schedules && schedules.length > 0 ? (
+                                schedules.map((schedule) => (
+                                    <div
+                                        key={schedule.id}
+                                        className={`subject-card ${selectedSubjectId === schedule.id ? 'active' : ''}`}
+                                        onClick={() => handleSubjectClick(schedule)}
+                                    >
+                                        <span className="subject-code">{schedule.course_code || schedule.section_name}</span>
+                                        <h4 className="subject-name">{schedule.course_name || 'Class ' + schedule.id}</h4>
+                                        <div className="subject-meta text-xs text-gray-500 mt-1">
+                                            {schedule.day_names?.join(', ')} {schedule.start_time}-{schedule.end_time}
+                                        </div>
+                                        {selectedSubjectId === schedule.id && <CheckCircle size={20} color="var(--primary-blue)" style={{ marginLeft: 'auto' }} />}
+                                    </div>
+                                ))
+                            ) : (
+                                <p>No classes found.</p>
+                            )}
                         </div>
                     </div>
+
+                    {/* Live Attendees List */}
+                    {isActive && (
+                        <div className="attendees-section mt-6">
+                            <div className="flex justify-between items-center mb-2">
+                                <h3 className="section-label flex items-center gap-2">
+                                    <Users size={18} /> Live Attendees ({attendees.length})
+                                </h3>
+                                <button
+                                    onClick={handleSimulateScan}
+                                    disabled={simulating}
+                                    className="text-xs bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded flex items-center gap-1"
+                                    title="Demo Mode: Simulate a student scan"
+                                >
+                                    <PlayCircle size={14} /> {simulating ? '...' : 'Demo Scan'}
+                                </button>
+                            </div>
+                            <div className="attendees-list bg-white rounded-lg shadow-inner p-2 max-h-60 overflow-y-auto">
+                                {attendees.length > 0 ? (
+                                    attendees.map(record => (
+                                        <div key={record.id} className="attendee-item flex justify-between items-center p-2 border-b last:border-0">
+                                            <div>
+                                                <p className="font-medium text-sm">{record.student_name}</p>
+                                                <p className="text-xs text-gray-500">{record.student_number}</p>
+                                            </div>
+                                            <span className="text-xs text-green-600 font-bold">
+                                                {new Date(record.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                                            </span>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-sm text-gray-400 text-center py-4">Waiting for students to scan...</p>
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <div className="display-section">
-                    {isActive ? (
+                    {isActive && qrToken ? (
                         <>
                             <div className="qr-container">
-                                <QRCodeCanvas value={qrData} size={330} level={"H"} />
+                                <QRCodeCanvas value={qrToken} size={330} level={"H"} />
                             </div>
 
                             <div className={`timer-display ${timer < 30 ? 'urgent' : ''}`}>
-                                <p className="timer-label">Expires in</p>
+                                <p className="timer-label">{timer === 0 ? 'Session Expired' : 'Expires in'}</p>
                                 <p className="timer-value">
                                     {formatTime(timer)}
                                 </p>
                             </div>
+
+                            <button
+                                className="end-session-btn"
+                                onClick={handleEndSession}
+                                style={{
+                                    marginTop: '20px',
+                                    padding: '10px 20px',
+                                    backgroundColor: '#FF5252',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '8px',
+                                    cursor: 'pointer',
+                                    fontWeight: 'bold'
+                                }}
+                            >
+                                End Session
+                            </button>
                         </>
                     ) : (
                         <div className="placeholder-display">
                             <div className="placeholder-icon">
                                 <RefreshCw size={64} color="#D1D5DB" />
                             </div>
-                            <p className="placeholder-text">Click a subject card to generate a QR code</p>
+                            <p className="placeholder-text">Click a class card to generate a QR code</p>
                         </div>
                     )}
                 </div>

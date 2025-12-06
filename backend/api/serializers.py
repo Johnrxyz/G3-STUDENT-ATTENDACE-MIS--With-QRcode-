@@ -38,20 +38,43 @@ class DaySerializer(serializers.ModelSerializer):
 
 class ClassScheduleSerializer(serializers.ModelSerializer):
     course_name = serializers.ReadOnlyField(source='course.name')
+    course_code = serializers.ReadOnlyField(source='course.code')
     section_name = serializers.ReadOnlyField(source='section.section_name')
     day_names = serializers.StringRelatedField(many=True, source='days', read_only=True)
+    student_count = serializers.IntegerField(source='section.students.count', read_only=True)
 
     class Meta:
         model = ClassSchedule
-        fields = ['id', 'course', 'course_name', 'section', 'section_name', 'days', 'day_names', 'start_time', 'end_time', 'room']
+        fields = ['id', 'course', 'course_name', 'course_code', 'section', 'section_name', 'days', 'day_names', 'start_time', 'end_time', 'room', 'student_count']
 
 class AttendanceSessionSerializer(serializers.ModelSerializer):
     schedule_info = serializers.StringRelatedField(source='schedule', read_only=True)
+    course_name = serializers.ReadOnlyField(source='schedule.course.name')
+    course_code = serializers.ReadOnlyField(source='schedule.course.code')
+    section_name = serializers.ReadOnlyField(source='schedule.section.section_name')
+    
+    total_students = serializers.SerializerMethodField()
+    present_count = serializers.SerializerMethodField()
+    absent_count = serializers.SerializerMethodField()
 
     class Meta:
         model = AttendanceSession
-        fields = ['id', 'schedule', 'schedule_info', 'date', 'started_at', 'closed_at', 'qr_token', 'qr_expires_at']
+        fields = ['id', 'schedule', 'schedule_info', 'course_name', 'course_code', 'section_name', 
+                  'date', 'started_at', 'closed_at', 'qr_token', 'qr_expires_at',
+                  'total_students', 'present_count', 'absent_count']
         read_only_fields = ['qr_token', 'started_at']
+
+    def get_total_students(self, obj):
+        return obj.schedule.section.students.count()
+
+    def get_present_count(self, obj):
+        return obj.records.filter(status__in=['present', 'late']).count()
+
+    def get_absent_count(self, obj):
+        # Absent = Total - Present (assuming no record means absent)
+        total = self.get_total_students(obj)
+        present = self.get_present_count(obj)
+        return total - present
 
 class AttendanceRecordSerializer(serializers.ModelSerializer):
     student_name = serializers.ReadOnlyField(source='student.user.get_full_name')

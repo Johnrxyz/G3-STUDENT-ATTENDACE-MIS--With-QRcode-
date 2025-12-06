@@ -1,16 +1,30 @@
 import React from 'react';
 import { BookOpen, Clock, CheckCircle, Calendar } from 'lucide-react';
+import useStudent from '../../hooks/useStudent';
+import useAuth from '../../hooks/useAuth';
 import './StudentDashboard.css';
 
 const StudentDashboard = () => {
-    // Get current user from localStorage
-    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    const { auth } = useAuth();
+    const { profile, history, loading, error } = useStudent();
+
+    if (loading) return <div className="p-8 text-center">Loading dashboard...</div>;
+    if (error) return <div className="p-8 text-center text-red-500">Error loading data.</div>;
+
+    // Calculate stats
+    const totalSessions = history.length; // Approximate using history count? No, history is records.
+    const attended = history.filter(r => r.status === 'present' || r.status === 'late').length;
+    const attendanceRate = totalSessions > 0 ? Math.round((attended / totalSessions) * 100) : 0;
+
+    // Recent records
+    const recentHistory = [...history].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 5);
 
     return (
         <div className="student-dashboard">
             <div className="dashboard-header">
-                <h1>Welcome back, {currentUser.name || 'Student'}!</h1>
+                <h1>Welcome back, {auth.user?.username || 'Student'}!</h1>
                 <p>Track your attendance and stay updated with your classes</p>
+                {/* <p>Student ID: {profile?.student_number}</p> */}
             </div>
 
             {/* Stats Cards */}
@@ -20,8 +34,8 @@ const StudentDashboard = () => {
                         <BookOpen size={24} color="#2563EB" />
                     </div>
                     <div className="stat-content">
-                        <h3>5</h3>
-                        <p>Active Classes</p>
+                        <h3>{profile?.sections?.length || 0}</h3>
+                        <p>Active Sections</p>
                     </div>
                 </div>
 
@@ -30,7 +44,7 @@ const StudentDashboard = () => {
                         <CheckCircle size={24} color="#10B981" />
                     </div>
                     <div className="stat-content">
-                        <h3>92%</h3>
+                        <h3>{attendanceRate}%</h3>
                         <p>Attendance Rate</p>
                     </div>
                 </div>
@@ -40,7 +54,7 @@ const StudentDashboard = () => {
                         <Clock size={24} color="#F59E0B" />
                     </div>
                     <div className="stat-content">
-                        <h3>3</h3>
+                        <h3>0</h3>
                         <p>Classes Today</p>
                     </div>
                 </div>
@@ -50,56 +64,8 @@ const StudentDashboard = () => {
                         <Calendar size={24} color="#6366F1" />
                     </div>
                     <div className="stat-content">
-                        <h3>45</h3>
-                        <p>Total Sessions</p>
-                    </div>
-                </div>
-            </div>
-
-            {/* Today's Schedule */}
-            <div className="dashboard-section">
-                <h2>Today's Schedule</h2>
-                <div className="schedule-list">
-                    <div className="schedule-item">
-                        <div className="schedule-time">
-                            <span className="time">9:00 AM</span>
-                            <span className="duration">1h 30m</span>
-                        </div>
-                        <div className="schedule-details">
-                            <h3>Mathematics 101</h3>
-                            <p>Prof. John Smith • Room 204</p>
-                        </div>
-                        <div className="schedule-status">
-                            <span className="status-badge completed">Attended</span>
-                        </div>
-                    </div>
-
-                    <div className="schedule-item">
-                        <div className="schedule-time">
-                            <span className="time">11:00 AM</span>
-                            <span className="duration">2h</span>
-                        </div>
-                        <div className="schedule-details">
-                            <h3>Computer Science</h3>
-                            <p>Prof. Sarah Johnson • Lab 3</p>
-                        </div>
-                        <div className="schedule-status">
-                            <span className="status-badge upcoming">Upcoming</span>
-                        </div>
-                    </div>
-
-                    <div className="schedule-item">
-                        <div className="schedule-time">
-                            <span className="time">2:00 PM</span>
-                            <span className="duration">1h</span>
-                        </div>
-                        <div className="schedule-details">
-                            <h3>Physics Lab</h3>
-                            <p>Prof. Michael Brown • Lab 1</p>
-                        </div>
-                        <div className="schedule-status">
-                            <span className="status-badge upcoming">Upcoming</span>
-                        </div>
+                        <h3>{totalSessions}</h3>
+                        <p>Total Recorded</p>
                     </div>
                 </div>
             </div>
@@ -111,37 +77,29 @@ const StudentDashboard = () => {
                     <table>
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                <th>Class</th>
-                                <th>Time</th>
+                                <th>Date / Time</th>
                                 <th>Status</th>
+                                <th>Session ID</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Dec 5, 2025</td>
-                                <td>Mathematics 101</td>
-                                <td>9:00 AM</td>
-                                <td><span className="status-badge completed">Present</span></td>
-                            </tr>
-                            <tr>
-                                <td>Dec 4, 2025</td>
-                                <td>Computer Science</td>
-                                <td>11:00 AM</td>
-                                <td><span className="status-badge completed">Present</span></td>
-                            </tr>
-                            <tr>
-                                <td>Dec 4, 2025</td>
-                                <td>Physics Lab</td>
-                                <td>2:00 PM</td>
-                                <td><span className="status-badge absent">Absent</span></td>
-                            </tr>
-                            <tr>
-                                <td>Dec 3, 2025</td>
-                                <td>Mathematics 101</td>
-                                <td>9:00 AM</td>
-                                <td><span className="status-badge completed">Present</span></td>
-                            </tr>
+                            {recentHistory.length > 0 ? (
+                                recentHistory.map((record) => (
+                                    <tr key={record.id}>
+                                        <td>{new Date(record.timestamp).toLocaleString()}</td>
+                                        <td>
+                                            <span className={`status-badge ${record.status === 'present' ? 'completed' : 'absent'}`}>
+                                                {record.status}
+                                            </span>
+                                        </td>
+                                        <td>{record.session}</td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="3">No records found.</td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>

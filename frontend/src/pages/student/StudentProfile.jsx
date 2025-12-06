@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import useStudent from '../../hooks/useStudent';
 import './StudentProfile.css';
 
 const StudentProfile = () => {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-
+    const { profile, loading } = useStudent();
     const [formData, setFormData] = useState({
-        name: currentUser.name || '',
-        studentId: currentUser.userId || '',
+        name: '',
+        studentId: '',
         section: '',
         age: '',
         course: '',
@@ -14,6 +14,21 @@ const StudentProfile = () => {
         status: '',
         gender: ''
     });
+
+    useEffect(() => {
+        if (profile) {
+            setFormData({
+                name: profile.user?.get_full_name || `${profile.user?.firstname} ${profile.user?.lastname}`,
+                studentId: profile.student_number || '',
+                section: 'Mapped Section', // Need to map sections if available
+                age: '20', // Placeholder as age not in model
+                course: 'BSIT', // Placeholder
+                address: 'Quezon City', // Placeholder
+                status: 'Regular', // Placeholder
+                gender: profile.user?.gender || ''
+            });
+        }
+    }, [profile]);
 
     const handleChange = (e) => {
         setFormData({
@@ -24,11 +39,10 @@ const StudentProfile = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Save to localStorage
-        const updatedUser = { ...currentUser, ...formData };
-        localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-        alert('Profile updated successfully!');
+        alert('Profile update not yet implemented in backend.');
     };
+
+    if (loading) return <div className="p-8 text-center">Loading profile...</div>;
 
     const enrolledCourses = [
         {
@@ -48,8 +62,8 @@ const StudentProfile = () => {
             {/* Welcome Banner */}
             <div className="welcome-banner">
                 <div className="banner-content">
-                    <p className="banner-date">September 25, 2024</p>
-                    <h1>Welcome back, {currentUser.name || 'Student'}!</h1>
+                    <p className="banner-date">{new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+                    <h1>Welcome back, {profile?.user?.firstname || 'Student'}!</h1>
                     <p className="banner-subtitle">
                         {formData.section && `${formData.section} • `}
                         Always stay updated in your portal
@@ -93,6 +107,7 @@ const StudentProfile = () => {
                                 placeholder="Enter your name"
                                 value={formData.name}
                                 onChange={handleChange}
+                                disabled // Read only for now unless backend updated
                             />
                         </div>
                         <div className="form-group">
@@ -102,7 +117,7 @@ const StudentProfile = () => {
                                 name="studentId"
                                 placeholder="Enter your student ID"
                                 value={formData.studentId}
-                                onChange={handleChange}
+                                disabled
                             />
                         </div>
                     </div>

@@ -1,12 +1,16 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import get_user_model
 from .models import StudentProfile
-from .serializers import UserSerializer, StudentProfileSerializer
+from .serializers import UserSerializer, StudentProfileSerializer, CustomTokenObtainPairSerializer
 from .permissions import IsAdmin, IsTeacher, IsStudent, IsTeacherOrAdmin
 
 User = get_user_model()
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -21,13 +25,21 @@ class UserViewSet(viewsets.ModelViewSet):
 class StudentProfileViewSet(viewsets.ModelViewSet):
     queryset = StudentProfile.objects.all()
     serializer_class = StudentProfileSerializer
-    permission_classes = [permissions.IsAuthenticated, IsTeacherOrAdmin]
+    permission_classes = [permissions.IsAuthenticated, IsTeacherOrAdmin | IsStudent]
 
     def get_queryset(self):
         user = self.request.user
+        queryset = StudentProfile.objects.all()
+        
         if user.role == 'student':
-            return StudentProfile.objects.filter(user=user)
-        return StudentProfile.objects.all()
+            queryset = queryset.filter(user=user)
+        
+        # Filter by section if provided
+        section_id = self.request.query_params.get('section')
+        if section_id:
+            queryset = queryset.filter(sections__id=section_id)
+            
+        return queryset
 
     @action(detail=True, methods=['post'], permission_classes=[IsAdmin])
     def regenerate_qr(self, request, pk=None):
