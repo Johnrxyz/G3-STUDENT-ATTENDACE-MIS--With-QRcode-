@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { QRCodeCanvas } from 'qrcode.react';
 import { Clock, Calendar, RefreshCw, CheckCircle } from 'lucide-react';
 import './GenerateQR.css';
 
 const GenerateQR = () => {
+    const { id } = useParams();
     const [selectedSubjectId, setSelectedSubjectId] = useState(null);
     const [dateTime, setDateTime] = useState(new Date());
     const [isActive, setIsActive] = useState(false);
@@ -54,6 +56,16 @@ const GenerateQR = () => {
         setTimer(120);
     };
 
+    useEffect(() => {
+        if (id) {
+            const subjectId = parseInt(id);
+            const subject = subjects.find(s => s.id === subjectId);
+            if (subject) {
+                handleSubjectClick(subjectId);
+            }
+        }
+    }, [id]);
+
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
@@ -102,11 +114,9 @@ const GenerateQR = () => {
                                     className={`subject-card ${selectedSubjectId === sub.id ? 'active' : ''}`}
                                     onClick={() => handleSubjectClick(sub.id)}
                                 >
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                        <span className="subject-code">{sub.code}</span>
-                                        {selectedSubjectId === sub.id && <CheckCircle size={20} color="var(--primary-blue)" />}
-                                    </div>
+                                    <span className="subject-code">{sub.code}</span>
                                     <h4 className="subject-name">{sub.name}</h4>
+                                    {selectedSubjectId === sub.id && <CheckCircle size={20} color="var(--primary-blue)" style={{ marginLeft: 'auto' }} />}
                                 </div>
                             ))}
                         </div>
@@ -117,7 +127,7 @@ const GenerateQR = () => {
                     {isActive ? (
                         <>
                             <div className="qr-container">
-                                <QRCodeCanvas value={qrData} size={350} level={"H"} />
+                                <QRCodeCanvas value={qrData} size={330} level={"H"} />
                             </div>
 
                             <div className={`timer-display ${timer < 30 ? 'urgent' : ''}`}>
