@@ -51,6 +51,12 @@ class SectionViewSet(viewsets.ModelViewSet):
         else:
             serializer.save()
 
+    @action(detail=False, methods=['get'], permission_classes=[permissions.AllowAny], authentication_classes=[])
+    def public(self, request):
+        sections = Section.objects.all()
+        serializer = self.get_serializer(sections, many=True)
+        return Response(serializer.data)
+
 class DayViewSet(viewsets.ModelViewSet):
     queryset = Day.objects.all()
     serializer_class = DaySerializer
