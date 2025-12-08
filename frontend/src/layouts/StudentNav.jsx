@@ -1,15 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
-import { QrCode, Calendar, History, LayoutDashboard, User, ScanLine } from 'lucide-react';
+import { QrCode, Calendar, History, LayoutDashboard, User, ScanLine, Menu, X } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import './StudentNav.css';
 
 const StudentNav = () => {
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    const toggleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    };
+
+    const closeSidebar = () => {
+        setIsSidebarOpen(false);
+    };
+
     return (
         <div className="student-layout">
+            <button className="menu-toggle" onClick={toggleSidebar}>
+                {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+
+            <div className={`overlay ${isSidebarOpen ? 'open' : ''}`} onClick={closeSidebar}></div>
+
             <div className="layout-body">
-                <aside className="sidebar">
+                <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
                     <div className="logo">
                         <ScanLine size={32} color="#5465FF" strokeWidth={2.5} />
                         <div>
@@ -19,23 +35,23 @@ const StudentNav = () => {
                         </div>
                     </div>
                     <nav className="nav-menu">
-                        <NavLink to="/student/dashboard" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+                        <NavLink to="/student/dashboard" onClick={closeSidebar} className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
                             <LayoutDashboard size={20} />
                             <span>Dashboard</span>
                         </NavLink>
-                        <NavLink to="/student/scan-qr" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+                        <NavLink to="/student/scan-qr" onClick={closeSidebar} className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
                             <QrCode size={20} />
                             <span>Scan QR</span>
                         </NavLink>
-                        <NavLink to="/student/schedule" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+                        <NavLink to="/student/schedule" onClick={closeSidebar} className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
                             <Calendar size={20} />
                             <span>My Schedule</span>
                         </NavLink>
-                        <NavLink to="/student/history" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+                        <NavLink to="/student/history" onClick={closeSidebar} className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
                             <History size={20} />
                             <span>Attendance History</span>
                         </NavLink>
-                        <NavLink to="/student/profile" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+                        <NavLink to="/student/profile" onClick={closeSidebar} className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
                             <User size={20} />
                             <span>My Profile</span>
                         </NavLink>

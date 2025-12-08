@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
+import ErrorModal from '../components/ErrorModal';
 import './Login.css';
 
 const Login = () => {
@@ -8,6 +9,14 @@ const Login = () => {
     const [formData, setFormData] = useState({
         username: '',
         password: ''
+    });
+
+    // Modal State
+    const [modalConfig, setModalConfig] = useState({
+        isOpen: false,
+        title: '',
+        message: '',
+        type: 'error'
     });
 
     const handleChange = (e) => {
@@ -18,24 +27,14 @@ const Login = () => {
     };
 
     const { login } = useAuth();
-    const [error, setError] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
 
         try {
             await login(formData.username, formData.password);
 
-            // Redirect is handled inside login? No, login returns true.
-            // We need to check role to redirect.
-            // But we can get auth state from hook or decoding here.
-            // Since login updates context asynchronously, we might need to wait or rely on simple logic.
-            // Let's decode or simply redirect to a default and let ProtectedRoute handle it?
-            // Better: Get role effectively.
-
             const token = localStorage.getItem('access');
-            // Quick decode for redirect
             if (token) {
                 const base64Url = token.split('.')[1];
                 const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -44,21 +43,67 @@ const Login = () => {
                 }).join(''));
                 const user = JSON.parse(jsonPayload);
 
-                if (user.role === 'admin') navigate('/admin/dashboard');
-                else if (user.role === 'teacher') navigate('/teacher/dashboard');
+                if (user.role === 'teacher' || user.role === 'admin') navigate('/teacher/dashboard');
                 else if (user.role === 'student') navigate('/student/dashboard');
                 else {
                     console.warn('Unknown role:', user.role);
-                    navigate('/');
+                    showError('Access Denied', 'Your account does not have a valid role assignment.');
+                    navigate('/'); // Or remain on login
                 }
             }
         } catch (err) {
-            setError('Invalid credentials! Please try again.');
+            handleLoginError(err);
         }
+    };
+
+    const handleLoginError = (err) => {
+        let title = 'Login Failed';
+        let message = 'An unexpected error occurred. Please try again.';
+
+        if (!err?.response) {
+            title = 'Network Error';
+            message = 'Unable to connect to the server. Please check your internet connection.';
+        } else if (err.response?.status === 400) {
+            title = 'Invalid Input';
+            message = 'Please check your username and password formatting.';
+        } else if (err.response?.status === 401) {
+            title = 'Invalid Credentials';
+            message = 'The username or password you entered is incorrect.';
+        } else {
+            message = `Server returned status: ${err.response.status}`;
+        }
+
+        setModalConfig({
+            isOpen: true,
+            title,
+            message,
+            type: 'error'
+        });
+    };
+
+    const showError = (title, message) => {
+        setModalConfig({
+            isOpen: true,
+            title,
+            message,
+            type: 'error'
+        });
+    }
+
+    const closeModal = () => {
+        setModalConfig(prev => ({ ...prev, isOpen: false }));
     };
 
     return (
         <div className="login-container">
+            <ErrorModal
+                isOpen={modalConfig.isOpen}
+                onClose={closeModal}
+                title={modalConfig.title}
+                message={modalConfig.message}
+                type={modalConfig.type}
+            />
+
             {/* Navbar */}
             <nav className="login-navbar">
                 <div className="login-nav-content">
