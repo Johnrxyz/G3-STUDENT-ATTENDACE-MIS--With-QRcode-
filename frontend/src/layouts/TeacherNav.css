@@ -21,8 +21,9 @@
   color: var(--white);
   display: flex;
   flex-direction: column;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
   z-index: 50;
   border-right: 1px solid rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease-in-out;
@@ -91,7 +92,9 @@
   background-color: #F5F7FA;
   overflow-x: hidden;
   width: 100%;
-  /* Ensure full width */
+  margin-left: 280px;
+  /* Offset for fixed sidebar */
+  min-height: 100vh;
 }
 
 .main-content::before {
@@ -180,6 +183,10 @@
     /* Reduced padding on tablet */
     margin-top: 3rem;
     /* Space for toggle button */
+  }
+
+  .main-content {
+    margin-left: 0;
   }
 
   .main-content::before {

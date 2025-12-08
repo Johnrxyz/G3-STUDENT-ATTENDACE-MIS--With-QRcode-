@@ -4,6 +4,7 @@
   padding: 4rem 4rem 2rem 4rem;
   margin-top: auto;
   font-family: var(--font-poppins);
+  z-index: 1000;
 }
 
 .footer-content {

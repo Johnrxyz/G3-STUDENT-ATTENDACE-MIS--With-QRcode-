@@ -32,12 +32,17 @@ class CourseViewSet(viewsets.ModelViewSet):
 class SectionViewSet(viewsets.ModelViewSet):
     queryset = Section.objects.all()
     serializer_class = SectionSerializer
-    permission_classes = [permissions.IsAuthenticated, IsTeacherOrAdmin]
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+             return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated(), IsTeacherOrAdmin()]
 
     def get_queryset(self):
-        user = self.request.user
-        if user.role == 'teacher':
-            return Section.objects.filter(instructor=user)
+        # Allow unrestricted access for list calls (for registration)
+        # But for specific user views, we could filter.
+        # Given the requirements, public list is acceptable.
+        if self.request.user.is_authenticated and self.request.user.role == 'teacher':
+             return Section.objects.filter(instructor=self.request.user)
         return Section.objects.all()
 
     def perform_create(self, serializer):
@@ -54,12 +59,15 @@ class DayViewSet(viewsets.ModelViewSet):
 class ClassScheduleViewSet(viewsets.ModelViewSet):
     queryset = ClassSchedule.objects.all()
     serializer_class = ClassScheduleSerializer
-    permission_classes = [permissions.IsAuthenticated, IsTeacherOrAdmin]
+    permission_classes = [permissions.IsAuthenticated, IsTeacherOrAdmin | IsStudent]
 
     def get_queryset(self):
         user = self.request.user
         if user.role == 'teacher':
             return ClassSchedule.objects.filter(section__instructor=user)
+        if user.role == 'student':
+            # Filter schedules where the section has this student
+            return ClassSchedule.objects.filter(section__students__user=user)
         return ClassSchedule.objects.all()
 
 class AttendanceSessionViewSet(viewsets.ModelViewSet):

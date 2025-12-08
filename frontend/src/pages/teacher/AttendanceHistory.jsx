@@ -3,6 +3,7 @@ import { Calendar as CalendarIcon, List, Filter, Download, ChevronLeft, ChevronR
 import './AttendanceHistory.css';
 
 import useTeacher from '../../hooks/useTeacher';
+import { formatTime } from '../../utils/dateUtils';
 
 const AttendanceHistory = () => {
     const { sessions, loading } = useTeacher();
@@ -19,7 +20,7 @@ const AttendanceHistory = () => {
         date: session.created_at || session.date, // 'YYYY-MM-DD'
         subject: session.course_name || 'Class',
         code: session.course_code || 'CODE',
-        time: new Date(session.created_at || session.started_at || session.date).toLocaleTimeString(),
+        time: formatTime(new Date(session.created_at || session.started_at || session.date)),
         total: session.total_students || 0,
         present: session.present_count || 0,
         absent: session.absent_count || 0,

@@ -4,6 +4,7 @@ import { QRCodeCanvas } from 'qrcode.react';
 import { Clock, Calendar, RefreshCw, CheckCircle, Users, PlayCircle } from 'lucide-react';
 import useTeacher from '../../hooks/useTeacher';
 import { getSessionRecords, simulateScan } from '../../api/attendance';
+import { formatTime } from '../../utils/dateUtils';
 import './GenerateQR.css';
 
 const GenerateQR = () => {
@@ -113,6 +114,8 @@ const GenerateQR = () => {
             return;
         }
 
+        if (!window.confirm("Are you sure you want to start a new attendance session for this class?")) return;
+
         try {
             const response = await handleOpenSession(schedule.id);
             setQrToken(response.qr_token || response.id);
@@ -167,7 +170,7 @@ const GenerateQR = () => {
         }
     };
 
-    const formatTime = (seconds) => {
+    const formatDuration = (seconds) => {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
         return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
@@ -182,12 +185,7 @@ const GenerateQR = () => {
         });
     };
 
-    const formatTimeString = (date) => {
-        return date.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-        });
-    };
+    // formatTimeString removed in favor of imported formatTime
 
     return (
         <div className="qr-page">
@@ -202,7 +200,7 @@ const GenerateQR = () => {
                         </div>
                         <div className="datetime-item">
                             <Clock size={24} />
-                            <span className="datetime-text">{formatTimeString(dateTime)}</span>
+                            <span className="datetime-text">{formatTime(dateTime)}</span>
                         </div>
                     </div>
 
@@ -216,7 +214,7 @@ const GenerateQR = () => {
                                         className={`subject-card ${selectedSubjectId === schedule.id ? 'active' : ''}`}
                                         onClick={() => handleSubjectClick(schedule)}
                                     >
-                                        <span className="subject-code">{schedule.course_code || schedule.section_name}</span>
+                                        <span className="subject-code">{schedule.course_code || schedule.section_name} - {schedule.section_name}</span>
                                         <h4 className="subject-name">{schedule.course_name || 'Class ' + schedule.id}</h4>
                                         <div className="subject-meta">
                                             {schedule.day_names?.join(', ')} {schedule.start_time}-{schedule.end_time}
@@ -255,7 +253,7 @@ const GenerateQR = () => {
                                                 <p className="attendee-id">{record.student_number}</p>
                                             </div>
                                             <span className="attendee-time">
-                                                {new Date(record.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                                                {formatTime(new Date(record.timestamp))}
                                             </span>
                                         </div>
                                     ))
@@ -277,7 +275,7 @@ const GenerateQR = () => {
                             <div className={`timer-display ${timer < 30 ? 'urgent' : ''}`}>
                                 <p className="timer-label">{timer === 0 ? 'Session Expired' : 'Expires in'}</p>
                                 <p className="timer-value">
-                                    {formatTime(timer)}
+                                    {formatDuration(timer)}
                                 </p>
                             </div>
 

@@ -5,9 +5,12 @@ import { getStudentsBySection } from '../../api/users';
 import { getSchedule } from '../../api/academic';
 import './StudentList.css';
 
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+
 const StudentList = () => {
     const { id } = useParams(); // This is Schedule ID
     const navigate = useNavigate();
+    const axiosPrivateInstance = useAxiosPrivate();
 
     const [schedule, setSchedule] = useState(null);
     const [students, setStudents] = useState([]);
@@ -18,7 +21,7 @@ const StudentList = () => {
         const fetchData = async () => {
             try {
                 // 1. Fetch Schedule Details
-                const schedRes = await getSchedule(id, axiosPrivate);
+                const schedRes = await getSchedule(id, axiosPrivateInstance);
                 const schedData = schedRes.data;
                 setSchedule(schedData);
 

@@ -5,7 +5,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenBlacklistView,
 )
-from users.views import UserViewSet, StudentProfileViewSet, CustomTokenObtainPairView, ProfileEditRequestViewSet
+from users.views import UserViewSet, StudentProfileViewSet, CustomTokenObtainPairView, ProfileEditRequestViewSet, RegisterView
 from attendance.views import (
     DepartmentViewSet, ProgramViewSet, CourseViewSet, SectionViewSet, 
     DayViewSet, ClassScheduleViewSet, AttendanceSessionViewSet, 
@@ -36,4 +36,5 @@ urlpatterns = [
     path('auth/login/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),    
     path('auth/logout/', TokenBlacklistView.as_view(), name='token_blacklist'),
+    path('auth/register/', RegisterView.as_view(), name='auth_register'),
 ]

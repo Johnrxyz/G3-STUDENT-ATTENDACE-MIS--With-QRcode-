@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { UserCheck, Clock, AlertCircle, MoreVertical, Check, X, Wifi, User } from 'lucide-react';
 import useTeacher from '../../hooks/useTeacher';
 import { getSessionRecords } from '../../api/attendance';
+import { formatTime } from '../../utils/dateUtils';
 import './LiveAttendance.css';
 
 const LiveAttendance = () => {
@@ -15,7 +16,7 @@ const LiveAttendance = () => {
     useEffect(() => {
         if (sessions && sessions.length > 0 && !selectedSessionId) {
             // Find active
-            const active = sessions.find(s => s.is_active);
+            const active = sessions.find(s => !s.closed_at);
             if (active) setSelectedSessionId(active.id);
         }
     }, [sessions, selectedSessionId]);
@@ -92,7 +93,7 @@ const LiveAttendance = () => {
                     <div className="spotlight-card">
                         <div className="spotlight-header">
                             <h3>Latest Scan</h3>
-                            <span className="time-now">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                            <span className="time-now">{formatTime(new Date())}</span>
                         </div>
 
                         {latestScan ? (
@@ -106,7 +107,7 @@ const LiveAttendance = () => {
                                 <div className="spotlight-details">
                                     <h2 className="spotlight-name">{latestScan.student_name || 'Student'}</h2>
                                     <p className="spotlight-id">{latestScan.student_number || 'ID'}</p>
-                                    <p className="spotlight-time">Scanned at {new Date(latestScan.timestamp).toLocaleTimeString()}</p>
+                                    <p className="spotlight-time">Scanned at {formatTime(new Date(latestScan.timestamp))}</p>
                                 </div>
                             </div>
                         ) : (
@@ -162,7 +163,7 @@ const LiveAttendance = () => {
                                                 <p className="feed-id">{record.student_number}</p>
                                             </div>
                                             <div className="feed-meta">
-                                                <span className="feed-time">{new Date(record.timestamp).toLocaleTimeString()}</span>
+                                                <span className="feed-time">{formatTime(new Date(record.timestamp))}</span>
                                                 <span
                                                     className="feed-status"
                                                     style={{ color: style.text, backgroundColor: style.bg }}

@@ -40,12 +40,13 @@ class ClassScheduleSerializer(serializers.ModelSerializer):
     course_name = serializers.ReadOnlyField(source='course.name')
     course_code = serializers.ReadOnlyField(source='course.code')
     section_name = serializers.ReadOnlyField(source='section.section_name')
+    instructor_name = serializers.ReadOnlyField(source='section.instructor.get_full_name')
     day_names = serializers.StringRelatedField(many=True, source='days', read_only=True)
     student_count = serializers.IntegerField(source='section.students.count', read_only=True)
 
     class Meta:
         model = ClassSchedule
-        fields = ['id', 'course', 'course_name', 'course_code', 'section', 'section_name', 'days', 'day_names', 'start_time', 'end_time', 'room', 'student_count']
+        fields = ['id', 'course', 'course_name', 'course_code', 'section', 'section_name', 'instructor_name', 'days', 'day_names', 'start_time', 'end_time', 'room', 'student_count']
 
 class AttendanceSessionSerializer(serializers.ModelSerializer):
     schedule_info = serializers.StringRelatedField(source='schedule', read_only=True)
