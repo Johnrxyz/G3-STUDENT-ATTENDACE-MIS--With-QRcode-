@@ -23,7 +23,7 @@ const AdminNav = () => {
                         <div>
                             <h2 className="logo-text">
                                 AttendEase
-                                <span className="text-xs block text-gray-500 font-normal mt-1">Admin Portal</span>
+                                <span className="logo-subtitle">Admin Portal</span>
                             </h2>
                         </div>
                     </div>

@@ -218,49 +218,49 @@ const GenerateQR = () => {
                                     >
                                         <span className="subject-code">{schedule.course_code || schedule.section_name}</span>
                                         <h4 className="subject-name">{schedule.course_name || 'Class ' + schedule.id}</h4>
-                                        <div className="subject-meta text-xs text-gray-500 mt-1">
+                                        <div className="subject-meta">
                                             {schedule.day_names?.join(', ')} {schedule.start_time}-{schedule.end_time}
                                         </div>
-                                        {selectedSubjectId === schedule.id && <CheckCircle size={20} color="var(--primary-blue)" style={{ marginLeft: 'auto' }} />}
+                                        {selectedSubjectId === schedule.id && <CheckCircle size={20} color="#5465FF" style={{ marginLeft: 'auto' }} />}
                                     </div>
                                 ))
                             ) : (
-                                <p>No classes found.</p>
+                                <p className="subject-meta">No classes found.</p>
                             )}
                         </div>
                     </div>
 
                     {/* Live Attendees List */}
                     {isActive && (
-                        <div className="attendees-section mt-6">
-                            <div className="flex justify-between items-center mb-2">
-                                <h3 className="section-label flex items-center gap-2">
+                        <div className="attendees-section">
+                            <div className="attendees-header">
+                                <h3 className="section-label flex items-center gap-2" style={{ margin: 0 }}>
                                     <Users size={18} /> Live Attendees ({attendees.length})
                                 </h3>
                                 <button
                                     onClick={handleSimulateScan}
                                     disabled={simulating}
-                                    className="text-xs bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded flex items-center gap-1"
+                                    className="demo-btn"
                                     title="Demo Mode: Simulate a student scan"
                                 >
                                     <PlayCircle size={14} /> {simulating ? '...' : 'Demo Scan'}
                                 </button>
                             </div>
-                            <div className="attendees-list bg-white rounded-lg shadow-inner p-2 max-h-60 overflow-y-auto">
+                            <div className="attendees-list">
                                 {attendees.length > 0 ? (
                                     attendees.map(record => (
-                                        <div key={record.id} className="attendee-item flex justify-between items-center p-2 border-b last:border-0">
+                                        <div key={record.id} className="attendee-item">
                                             <div>
-                                                <p className="font-medium text-sm">{record.student_name}</p>
-                                                <p className="text-xs text-gray-500">{record.student_number}</p>
+                                                <p className="attendee-name">{record.student_name}</p>
+                                                <p className="attendee-id">{record.student_number}</p>
                                             </div>
-                                            <span className="text-xs text-green-600 font-bold">
+                                            <span className="attendee-time">
                                                 {new Date(record.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                                             </span>
                                         </div>
                                     ))
                                 ) : (
-                                    <p className="text-sm text-gray-400 text-center py-4">Waiting for students to scan...</p>
+                                    <p className="placeholder-text" style={{ fontSize: '0.9rem', textAlign: 'center', padding: '1rem' }}>Waiting for students to scan...</p>
                                 )}
                             </div>
                         </div>
@@ -284,16 +284,6 @@ const GenerateQR = () => {
                             <button
                                 className="end-session-btn"
                                 onClick={handleEndSession}
-                                style={{
-                                    marginTop: '20px',
-                                    padding: '10px 20px',
-                                    backgroundColor: '#FF5252',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '8px',
-                                    cursor: 'pointer',
-                                    fontWeight: 'bold'
-                                }}
                             >
                                 End Session
                             </button>

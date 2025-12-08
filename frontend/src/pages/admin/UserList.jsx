@@ -39,14 +39,14 @@ const UserList = () => {
 
     const getRoleIcon = (role) => {
         switch (role) {
-            case 'admin': return <Shield size={16} className="text-red-500" />;
-            case 'teacher': return <BookOpen size={16} className="text-blue-500" />;
-            case 'student': return <GraduationCap size={16} className="text-green-500" />;
+            case 'admin': return <Shield size={16} className="icon-red" />;
+            case 'teacher': return <BookOpen size={16} className="icon-blue" />;
+            case 'student': return <GraduationCap size={16} className="icon-green" />;
             default: return null;
         }
     };
 
-    if (loading) return <div className="p-8 text-center">Loading users...</div>;
+    if (loading) return <div className="loading-state">Loading users...</div>;
 
     return (
         <div className="user-list-page">
@@ -98,32 +98,32 @@ const UserList = () => {
                                 filteredUsers.map(user => (
                                     <tr key={user.id}>
                                         <td>
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center font-bold text-gray-500">
+                                            <div className="user-cell">
+                                                <div className="user-avatar">
                                                     {user.firstname?.[0] || user.username?.[0]}
                                                 </div>
-                                                <div>
-                                                    <div className="font-medium text-gray-900">
+                                                <div className="user-info">
+                                                    <div className="user-name">
                                                         {user.firstname} {user.lastname}
                                                     </div>
-                                                    <div className="text-xs text-gray-400">@{user.username}</div>
+                                                    <div className="user-username">@{user.username}</div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
-                                            <div className="flex items-center gap-2 capitalize">
+                                            <div className="role-badge">
                                                 {getRoleIcon(user.role)}
                                                 {user.role}
                                             </div>
                                         </td>
                                         <td>{user.email}</td>
                                         <td>
-                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${user.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                            <span className={`status-badge ${user.is_active ? 'active' : 'inactive'}`}>
                                                 {user.is_active ? 'Active' : 'Inactive'}
                                             </span>
                                         </td>
                                         {/* <td>
-                                            <button className="text-gray-400 hover:text-red-600 transition-colors">
+                                            <button className="action-btn">
                                                 <Trash2 size={18} />
                                             </button>
                                         </td> */}
@@ -131,7 +131,7 @@ const UserList = () => {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="5" className="text-center p-8 text-gray-500">
+                                    <td colSpan="5" className="empty-state">
                                         No users found matching your filters.
                                     </td>
                                 </tr>

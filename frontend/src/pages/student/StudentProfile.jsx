@@ -67,13 +67,13 @@ const StudentProfile = () => {
                 </div>
             </div>
 
-            {msg && <div className="p-4 mb-4 text-green-600 bg-green-100 rounded">{msg}</div>}
+            {msg && <div className="alert-success">{msg}</div>}
 
             <div className="dashboard-card">
-                <div className="flex justify-between items-center mb-4">
+                <div className="profile-section-header">
                     <h2>Personal Information</h2>
                     <button
-                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                        className="btn-primary"
                         onClick={() => setShowEditModal(true)}
                     >
                         Request Edit
@@ -99,22 +99,19 @@ const StudentProfile = () => {
                     </div>
                 </div>
 
-                <div className="mt-8">
+                <div className="edit-requests-section">
                     <h3>Edit Requests Status</h3>
-                    {requests.length === 0 ? <p className="text-gray-500">No pending requests.</p> : (
-                        <div className="mt-2 space-y-2">
+                    {requests.length === 0 ? <p className="empty-state">No pending requests.</p> : (
+                        <div className="request-list">
                             {requests.map(req => (
-                                <div key={req.id} className="p-3 border rounded flex justify-between items-center">
+                                <div key={req.id} className="request-item">
                                     <div>
-                                        <div className="font-semibold">{req.new_firstname} {req.new_lastname}</div>
-                                        <div className="text-sm text-gray-600">Reason: {req.reason}</div>
-                                        <div className="text-xs text-gray-400">{new Date(req.created_at).toLocaleDateString()}</div>
+                                        <div className="request-info-name">{req.new_firstname} {req.new_lastname}</div>
+                                        <div className="request-info-reason">Reason: {req.reason}</div>
+                                        <div className="request-info-date">{new Date(req.created_at).toLocaleDateString()}</div>
                                     </div>
-                                    <span className={`px-2 py-1 rounded text-sm ${req.status === 'approved' ? 'bg-green-100 text-green-800' :
-                                            req.status === 'denied' ? 'bg-red-100 text-red-800' :
-                                                'bg-yellow-100 text-yellow-800'
-                                        }`}>
-                                        {req.status.charAt(0).toUpperCase() + req.status.slice(1)}
+                                    <span className={`request-status ${req.status}`}>
+                                        {req.status}
                                     </span>
                                 </div>
                             ))}
@@ -124,54 +121,54 @@ const StudentProfile = () => {
             </div>
 
             {showEditModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-md">
-                        <h3 className="text-xl font-bold mb-4">Request Profile Edit</h3>
+                <div className="modal-overlay">
+                    <div className="modal-card">
+                        <h3 className="modal-title">Request Profile Edit</h3>
                         <form onSubmit={handleSubmitRequest}>
-                            <div className="mb-4">
-                                <label className="block text-sm font-medium mb-1">New First Name</label>
+                            <div className="form-group">
+                                <label className="form-label">New First Name</label>
                                 <input
                                     type="text"
                                     name="new_firstname"
                                     value={requestData.new_firstname}
                                     onChange={handleRequestChange}
-                                    className="w-full border p-2 rounded"
+                                    className="form-input"
                                     required
                                 />
                             </div>
-                            <div className="mb-4">
-                                <label className="block text-sm font-medium mb-1">New Last Name</label>
+                            <div className="form-group">
+                                <label className="form-label">New Last Name</label>
                                 <input
                                     type="text"
                                     name="new_lastname"
                                     value={requestData.new_lastname}
                                     onChange={handleRequestChange}
-                                    className="w-full border p-2 rounded"
+                                    className="form-input"
                                     required
                                 />
                             </div>
-                            <div className="mb-4">
-                                <label className="block text-sm font-medium mb-1">Reason for Change</label>
+                            <div className="form-group">
+                                <label className="form-label">Reason for Change</label>
                                 <textarea
                                     name="reason"
                                     value={requestData.reason}
                                     onChange={handleRequestChange}
-                                    className="w-full border p-2 rounded"
+                                    className="form-textarea"
                                     rows="3"
                                     required
                                 />
                             </div>
-                            <div className="flex justify-end gap-2">
+                            <div className="modal-actions">
                                 <button
                                     type="button"
                                     onClick={() => setShowEditModal(false)}
-                                    className="px-4 py-2 border rounded hover:bg-gray-50"
+                                    className="btn-cancel"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                    className="btn-submit"
                                 >
                                     Submit Request
                                 </button>

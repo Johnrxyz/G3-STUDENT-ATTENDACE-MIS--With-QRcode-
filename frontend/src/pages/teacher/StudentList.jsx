@@ -52,29 +52,36 @@ const StudentList = () => {
 
     return (
         <div className="student-list-page">
-            <button onClick={() => navigate('/teacher/dashboard')} className="back-btn mb-4 flex items-center gap-2 text-gray-500 hover:text-blue-600">
+            <button
+                onClick={() => navigate('/teacher/dashboard')}
+                className="back-btn"
+            >
                 <ArrowLeft size={18} /> Back to Dashboard
             </button>
 
-            <div className="class-header mb-6 p-6 bg-white rounded-xl shadow-sm border border-gray-100 flex justify-between items-start">
+            <div className="class-header">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900 mb-1">{schedule.course_name || 'Course Name'}</h1>
-                    <p className="text-gray-600">{schedule.course_code} • {schedule.section_name}</p>
-                    <div className="mt-2 text-sm text-blue-600 font-medium">
+                    <h1 className="class-title-group">
+                        <span style={{ display: 'block', fontSize: '1.5rem', fontWeight: '700', color: '#1E293B', marginBottom: '0.25rem' }}>
+                            {schedule.course_name || 'Course Name'}
+                        </span>
+                    </h1>
+                    <p className="class-subtitle">{schedule.course_code} • {schedule.section_name}</p>
+                    <div className="class-schedule-info">
                         {schedule.day_names?.join(', ')} • {schedule.start_time} - {schedule.end_time}
                     </div>
                 </div>
                 <button
                     onClick={() => navigate(`/teacher/generate-qr/${schedule.id}`)}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+                    className="btn-generate-qr"
                 >
                     <QrCode size={18} /> Generate QR
                 </button>
             </div>
 
             <div className="content-card">
-                <div className="controls-bar mb-4">
-                    <h2 className="text-lg font-semibold text-gray-800">Enrolled Students ({filteredStudents.length})</h2>
+                <div className="controls-bar">
+                    <h2 className="controls-title">Enrolled Students ({filteredStudents.length})</h2>
                     <div className="search-wrapper">
                         <input
                             type="text"
@@ -102,27 +109,27 @@ const StudentList = () => {
                                 filteredStudents.map((student, index) => (
                                     <tr key={student.id || index}>
                                         <td>
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 text-xs font-bold">
+                                            <div className="student-cell">
+                                                <div className="student-avatar">
                                                     {student.user?.firstname?.[0]}{student.user?.lastname?.[0]}
                                                 </div>
-                                                <span className="student-name font-medium">
+                                                <span className="student-name">
                                                     {student.user?.firstname} {student.user?.lastname}
                                                 </span>
                                             </div>
                                         </td>
                                         <td>{student.student_number}</td>
                                         <td>
-                                            <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Active</span>
+                                            <span className="status-badge">Active</span>
                                         </td>
                                         <td>
-                                            <button className="text-sm text-blue-600 hover:text-blue-800">View History</button>
+                                            <button className="btn-link">View History</button>
                                         </td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="4" className="text-center p-8 text-gray-500">
+                                    <td colSpan="4" className="empty-state">
                                         No students found in this section.
                                     </td>
                                 </tr>

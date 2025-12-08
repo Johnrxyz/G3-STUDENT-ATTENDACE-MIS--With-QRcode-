@@ -73,37 +73,37 @@ const RequestManagement = () => {
                     requests.map(req => (
                         <div key={req.id} className="request-card">
                             <div className="request-header">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-blue-50 rounded-full text-blue-600">
+                                <div className="request-student-info">
+                                    <div className="request-icon">
                                         <User size={20} />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-bold text-gray-800">
+                                        <h3 className="request-name">
                                             {req.student.user.firstname} {req.student.user.lastname}
                                         </h3>
-                                        <p className="text-sm text-gray-500">{req.student.student_number}</p>
+                                        <p className="request-id">{req.student.student_number}</p>
                                     </div>
                                 </div>
-                                <div className="text-xs text-gray-400 flex items-center gap-1">
+                                <div className="request-date">
                                     <Clock size={12} />
                                     {new Date(req.created_at).toLocaleDateString()}
                                 </div>
                             </div>
 
-                            <div className="request-body my-4 p-4 bg-gray-50 rounded-lg">
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <p className="text-xs text-gray-500 uppercase font-semibold">Current Name</p>
-                                        <p className="text-gray-700">{req.student.user.firstname} {req.student.user.lastname}</p>
+                            <div className="request-details">
+                                <div className="detail-grid">
+                                    <div className="detail-item">
+                                        <p className="detail-label">Current Name</p>
+                                        <p className="detail-value text-normal">{req.student.user.firstname} {req.student.user.lastname}</p>
                                     </div>
-                                    <div>
-                                        <p className="text-xs text-gray-500 uppercase font-semibold">Requested Name</p>
-                                        <p className="text-gray-900 font-medium">{req.new_firstname} {req.new_lastname}</p>
+                                    <div className="detail-item">
+                                        <p className="detail-label">Requested Name</p>
+                                        <p className="detail-value text-highlight">{req.new_firstname} {req.new_lastname}</p>
                                     </div>
                                 </div>
-                                <div className="mt-3 pt-3 border-t border-gray-200">
-                                    <p className="text-xs text-gray-500 uppercase font-semibold">Reason</p>
-                                    <p className="text-gray-700 italic">"{req.reason}"</p>
+                                <div className="reason-section">
+                                    <p className="detail-label">Reason</p>
+                                    <p className="reason-text">"{req.reason}"</p>
                                 </div>
                             </div>
 
@@ -111,14 +111,14 @@ const RequestManagement = () => {
                                 <button
                                     onClick={() => handleDeny(req.id)}
                                     disabled={actionLoading === req.id}
-                                    className="px-4 py-2 border border-red-200 text-red-600 rounded-lg hover:bg-red-50 flex items-center gap-2"
+                                    className="btn-request deny"
                                 >
                                     <X size={16} /> Deny
                                 </button>
                                 <button
                                     onClick={() => handleApprove(req.id)}
                                     disabled={actionLoading === req.id}
-                                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2"
+                                    className="btn-request approve"
                                 >
                                     <Check size={16} /> Approve
                                 </button>
@@ -126,10 +126,10 @@ const RequestManagement = () => {
                         </div>
                     ))
                 ) : (
-                    <div className="text-center py-12 bg-white rounded-xl shadow-sm">
-                        <User size={48} className="mx-auto text-gray-300 mb-4" />
-                        <h3 className="text-xl font-medium text-gray-800">No Pending Requests</h3>
-                        <p className="text-gray-500">All student profile update requests have been processed.</p>
+                    <div className="no-requests">
+                        <User size={48} className="no-requests-icon" />
+                        <h3 className="no-requests-title">No Pending Requests</h3>
+                        <p className="no-requests-text">All student profile update requests have been processed.</p>
                     </div>
                 )}
             </div>

@@ -1,325 +1,240 @@
-/* Student Profile Page Styles */
 .student-profile-page {
-    padding: 0;
-    background: linear-gradient(180deg, #DBEAFE 0%, #FFFFFF 100%);
-    min-height: 100vh;
-    padding: 2rem;
+    width: 100%;
 }
 
-/* Welcome Banner */
 .welcome-banner {
-    background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
-    border-radius: 20px;
-    padding: 2rem 3rem;
-    margin-bottom: 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    background-color: #050C44;
     color: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.banner-content {
-    flex: 1;
-}
-
-.banner-date {
-    font-size: 0.9rem;
-    opacity: 0.9;
-    margin-bottom: 0.5rem;
+    padding: 2.5rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
 }
 
 .banner-content h1 {
     font-size: 2rem;
-    margin: 0.5rem 0;
     font-weight: 700;
+    margin: 0 0 0.5rem 0;
 }
 
-.banner-subtitle {
-    font-size: 1rem;
-    opacity: 0.9;
+.banner-content p {
+    font-size: 1.1rem;
+    opacity: 0.8;
+    margin: 0;
 }
 
-.banner-image {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 200px;
-    height: 150px;
-}
-
-.student-character {
-    width: 215px;
-    height: auto;
-    position: relative; 
-    z-index: 2;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
-}
-
-.graduation-cap {
-    position: absolute;
-    width: 200px;
-    height: auto;
-    top: -60px;
-    left: -100px;
-    z-index: 1;
-    animation: float 3s ease-in-out infinite;
-}
-
-.backpack {
-    position: absolute;
-    width: 200px;
-    height: auto;
-    right: -80px;
-    z-index: 1;
-    animation: float 3s ease-in-out infinite 1s;
-}
-
-.decorative-dots {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-}
-
-.dot {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    animation: pulse 2s ease-in-out infinite;
-}
-
-.dot-1 {
-    background: #10B981;
-    top: 20%;
-    left: 10%;
-    animation-delay: 0s;
-}
-
-.dot-2 {
-    background: #EF4444;
-    top: 30%;
-    right: 15%;
-    animation-delay: 0.5s;
-}
-
-.dot-3 {
-    background: #3B82F6;
-    bottom: 25%;
-    right: 20%;
-    animation-delay: 1s;
-}
-
-.dot-4 {
-    background: #EC4899;
-    bottom: 30%;
-    left: 15%;
-    animation-delay: 1.5s;
-}
-
-@keyframes float {
-
-    0%,
-    100% {
-        transform: translateY(0px);
-    }
-
-    50% {
-        transform: translateY(-10px);
-    }
-}
-
-@keyframes pulse {
-
-    0%,
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-
-    50% {
-        transform: scale(1.2);
-        opacity: 0.7;
-    }
-}
-
-/* Dashboard Card */
 .dashboard-card {
-    background: white;
-    border-radius: 20px;
+    background-color: white;
+    border-radius: 12px;
     padding: 2rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.dashboard-card h2 {
-    font-size: 1.5rem;
-    color: #1F2937;
-    margin-bottom: 1.5rem;
-}
-
-/* Profile Form */
-.profile-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.form-group label {
-    font-size: 0.9rem;
-    color: #6B7280;
-    font-weight: 500;
-}
-
-.form-group input {
-    padding: 0.75rem 1rem;
-    border: 1px solid #E5E7EB;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    transition: border-color 0.2s;
-}
-
-.form-group input:focus {
-    outline: none;
-    border-color: #6366F1;
-}
-
-.form-group input::placeholder {
-    color: #D1D5DB;
-}
-
-.save-btn {
-    background: #6366F1;
-    color: white;
-    padding: 0.875rem 2rem;
-    border: none;
-    border-radius: 10px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    align-self: flex-end;
-    transition: background-color 0.2s;
-}
-
-.save-btn:hover {
-    background: #4F46E5;
-}
-
-/* Enrolled Courses */
-.enrolled-section {
-    margin-bottom: 2rem;
-}
-
-.enrolled-section h2 {
-    font-size: 1.5rem;
-    color: #1F2937;
-    margin-bottom: 1.5rem;
-}
-
-.courses-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-}
-
-.course-card {
-    background: #818CF8;
-    border-radius: 16px;
-    padding: 2rem;
+.profile-section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #F1F5F9;
+    padding-bottom: 1rem;
 }
 
-.course-card:hover {
-    transform: translateY(-4px);
-}
-
-.course-content {
-    flex: 1;
-}
-
-.course-content h3 {
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
-    line-height: 1.4;
-}
-
-.view-btn {
-    background: white;
-    color: #6366F1;
-    padding: 0.5rem 1.5rem;
-    border: none;
-    border-radius: 8px;
+.profile-section-header h2 {
+    font-size: 1.25rem;
     font-weight: 600;
+    color: #1E293B;
+    margin: 0;
+}
+
+.btn-primary {
+    background-color: #2563eb;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: none;
     cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
     transition: background-color 0.2s;
 }
 
-.view-btn:hover {
-    background: #F3F4F6;
+.btn-primary:hover {
+    background-color: #1d4ed8;
 }
 
-.course-icon {
-    font-size: 3rem;
-    margin-left: 1rem;
+.profile-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .welcome-banner {
-        flex-direction: column;
-        text-align: center;
-        padding: 1.5rem;
-    }
+.detail-item label {
+    display: block;
+    font-size: 0.85rem;
+    color: #64748B;
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    font-weight: 600;
+}
 
-    .banner-content h1 {
-        font-size: 1.5rem;
-    }
+.detail-item p {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #0F172A;
+    font-weight: 500;
+}
 
-    .banner-image {
-        width: 150px;
-        height: 120px;
-        margin-top: 1rem;
-    }
+/* Edit Requests */
+.edit-requests-section {
+    margin-top: 3rem;
+}
 
-    .student-character {
-        width: 80px;
-    }
+.edit-requests-section h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1E293B;
+    margin-bottom: 1rem;
+}
 
-    .graduation-cap {
-        width: 40px;
-    }
+.request-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
 
-    .backpack {
-        width: 35px;
-    }
+.request-item {
+    padding: 1rem;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-    .form-row {
-        grid-template-columns: 1fr;
-    }
+.request-info-name {
+    font-weight: 600;
+    color: #1E293B;
+}
 
-    .courses-grid {
-        grid-template-columns: 1fr;
-    }
+.request-info-reason {
+    font-size: 0.9rem;
+    color: #64748B;
+}
 
-    .save-btn {
-        width: 100%;
-    }
+.request-info-date {
+    font-size: 0.75rem;
+    color: #94A3B8;
+    margin-top: 0.2rem;
+}
+
+.request-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.request-status.approved {
+    background-color: #DCFCE7;
+    color: #166534;
+}
+
+.request-status.denied {
+    background-color: #FEE2E2;
+    color: #991B1B;
+}
+
+.request-status.pending {
+    background-color: #FEF3C7;
+    color: #92400E;
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 1rem;
+}
+
+.modal-card {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 450px;
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #1E293B;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #334155;
+}
+
+.form-input,
+.form-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.95rem;
+}
+
+.form-textarea {
+    resize: vertical;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.btn-cancel {
+    background: none;
+    border: 1px solid #E2E8F0;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #64748B;
+}
+
+.btn-submit {
+    background-color: #2563eb;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Alerts */
+.alert-success {
+    background-color: #DCFCE7;
+    color: #166534;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
 }

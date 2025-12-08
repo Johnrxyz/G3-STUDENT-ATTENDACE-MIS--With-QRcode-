@@ -95,19 +95,19 @@ const AddClassModal = ({ isOpen, onClose, onClassAdded }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl shadow-lg w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-xl font-bold">Add New Class</h3>
-                    <button onClick={onClose}><X size={20} /></button>
+        <div className="modal-overlay">
+            <div className="modal-content">
+                <div className="modal-header">
+                    <h3 className="modal-title">Add New Class</h3>
+                    <button onClick={onClose} className="close-btn"><X size={20} /></button>
                 </div>
 
                 <form onSubmit={handleCreateClass}>
                     {/* Section Selection */}
-                    <div className="mb-6 space-y-4">
-                        <label className="block text-sm font-semibold text-gray-700">Section</label>
+                    <div className="form-section">
+                        <label className="form-label">Section</label>
                         <select
-                            className="w-full p-2 border rounded-lg"
+                            className="form-select"
                             value={selectedSectionId}
                             onChange={(e) => setSelectedSectionId(e.target.value)}
                             required
@@ -120,11 +120,11 @@ const AddClassModal = ({ isOpen, onClose, onClassAdded }) => {
                         </select>
 
                         {selectedSectionId === 'new' && (
-                            <div className="bg-gray-50 p-4 rounded-lg space-y-3">
-                                <div>
-                                    <label className="text-xs font-semibold text-gray-600 block mb-1">Program</label>
+                            <div className="subsection">
+                                <div className="form-group">
+                                    <label className="form-label text-sm">Program</label>
                                     <select
-                                        className="w-full p-2 border rounded"
+                                        className="form-select"
                                         value={newSectionData.program}
                                         onChange={(e) => setNewSectionData({ ...newSectionData, program: e.target.value })}
                                         required
@@ -135,11 +135,11 @@ const AddClassModal = ({ isOpen, onClose, onClassAdded }) => {
                                         ))}
                                     </select>
                                 </div>
-                                <div>
-                                    <label className="text-xs font-semibold text-gray-600 block mb-1">Year Level</label>
+                                <div className="form-group mt-2">
+                                    <label className="form-label text-sm">Year Level</label>
                                     <input
                                         type="number"
-                                        className="w-full p-2 border rounded"
+                                        className="form-input"
                                         min="1" max="5"
                                         value={newSectionData.year_level}
                                         onChange={(e) => setNewSectionData({ ...newSectionData, year_level: e.target.value })}
@@ -151,12 +151,12 @@ const AddClassModal = ({ isOpen, onClose, onClassAdded }) => {
                     </div>
 
                     {/* Class Details */}
-                    <div className="mb-6 space-y-4">
-                        <label className="block text-sm font-semibold text-gray-700">Class Details</label>
+                    <div className="form-section">
+                        <label className="form-label">Class Details</label>
 
-                        <div>
+                        <div className="form-group mb-4">
                             <select
-                                className="w-full p-2 border rounded-lg"
+                                className="form-select"
                                 value={scheduleData.course}
                                 onChange={(e) => setScheduleData({ ...scheduleData, course: e.target.value })}
                                 required
@@ -168,18 +168,15 @@ const AddClassModal = ({ isOpen, onClose, onClassAdded }) => {
                             </select>
                         </div>
 
-                        <div>
-                            <label className="text-xs text-gray-500 mb-2 block">Schedule Days</label>
-                            <div className="flex flex-wrap gap-2">
+                        <div className="form-group mb-4">
+                            <label className="form-label text-sm">Schedule Days</label>
+                            <div className="day-selector">
                                 {days.map(day => (
                                     <button
                                         key={day.id}
                                         type="button"
                                         onClick={() => toggleDay(day.id)}
-                                        className={`px-3 py-1 text-sm rounded-full border ${scheduleData.days.includes(day.id)
-                                                ? 'bg-blue-600 text-white border-blue-600'
-                                                : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
-                                            }`}
+                                        className={`day-pill ${scheduleData.days.includes(day.id) ? 'selected' : ''}`}
                                     >
                                         {day.name.slice(0, 3)}
                                     </button>
@@ -187,22 +184,22 @@ const AddClassModal = ({ isOpen, onClose, onClassAdded }) => {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="form-row">
                             <div>
-                                <label className="text-xs text-gray-500 block mb-1">Start Time</label>
+                                <label className="form-label text-sm">Start Time</label>
                                 <input
                                     type="time"
-                                    className="w-full p-2 border rounded"
+                                    className="form-input"
                                     value={scheduleData.start_time}
                                     onChange={(e) => setScheduleData({ ...scheduleData, start_time: e.target.value })}
                                     required
                                 />
                             </div>
                             <div>
-                                <label className="text-xs text-gray-500 block mb-1">End Time</label>
+                                <label className="form-label text-sm">End Time</label>
                                 <input
                                     type="time"
-                                    className="w-full p-2 border rounded"
+                                    className="form-input"
                                     value={scheduleData.end_time}
                                     onChange={(e) => setScheduleData({ ...scheduleData, end_time: e.target.value })}
                                     required
@@ -211,18 +208,18 @@ const AddClassModal = ({ isOpen, onClose, onClassAdded }) => {
                         </div>
                     </div>
 
-                    <div className="flex justify-end gap-3 mt-6">
+                    <div className="modal-footer">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                            className="btn-cancel"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={loading}
-                            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-300"
+                            className="btn-primary"
                         >
                             {loading ? 'Creating...' : 'Create Class'}
                         </button>
@@ -239,7 +236,7 @@ const Dashboard = () => {
     const navigate = useNavigate();
     const [showAddClass, setShowAddClass] = useState(false);
 
-    if (loading) return <div className="p-8 text-center text-gray-500">Loading dashboard...</div>;
+    if (loading) return <div className="loading-state">Loading dashboard...</div>;
 
     const totalStudents = schedules?.reduce((acc, sch) => acc + (sch.student_count || 0), 0) || 0;
     const totalClasses = schedules?.length || 0;
@@ -266,31 +263,31 @@ const Dashboard = () => {
             </div>
 
             {/* Quick Actions */}
-            <div className="quick-actions-grid mb-8">
+            <div className="quick-actions-grid">
                 <button
-                    className="action-card bg-blue-600 text-white hover:bg-blue-700"
+                    className="action-card primary"
                     onClick={() => setShowAddClass(true)}
                 >
-                    <div className="action-icon"><Plus size={24} /></div>
+                    <Plus size={24} />
                     <span>Add New Class</span>
                 </button>
                 <button
-                    className="action-card bg-white text-gray-800 border border-gray-200 hover:bg-gray-50 from-purple-500 to-indigo-600"
+                    className="action-card secondary"
                     onClick={() => navigate('/teacher/generate-qr')}
                 >
-                    <div className="action-icon text-purple-600"><QrCode size={24} /></div>
+                    <QrCode size={24} className="text-purple-600" />
                     <span>Generate QR</span>
                 </button>
                 <button
-                    className="action-card bg-white text-gray-800 border border-gray-200 hover:bg-gray-50"
+                    className="action-card secondary"
                     onClick={() => navigate('/teacher/live-attendance')}
                 >
-                    <div className="action-icon text-green-600"><Activity size={24} /></div>
+                    <Activity size={24} className="text-green-600" />
                     <span>Live Monitor</span>
                 </button>
             </div>
 
-            <div className="stats-grid mb-8">
+            <div className="stats-grid">
                 {stats.map((stat, index) => (
                     <div key={index} className="stat-card">
                         <div className="stat-icon-wrapper" style={{ backgroundColor: `${stat.color}15` }}>
@@ -330,7 +327,7 @@ const Dashboard = () => {
                                 </div>
                             ))
                         ) : (
-                            <p className="p-4 text-gray-500">No recent sessions found.</p>
+                            <p className="empty-state">No recent sessions found.</p>
                         )}
                     </div>
                     <div className="card-footer">
@@ -345,9 +342,9 @@ const Dashboard = () => {
                     </div>
                     <div className="classes-list">
                         {schedules && schedules.map((schedule) => (
-                            <div key={schedule.id} className="class-item group hover:bg-gray-50 cursor-pointer" onClick={() => navigate(`/teacher/classes/${schedule.id}`)}>
+                            <div key={schedule.id} className="class-item" onClick={() => navigate(`/teacher/classes/${schedule.id}`)}>
                                 <div className="class-info">
-                                    <h4 className="group-hover:text-blue-600">{schedule.course_name}</h4>
+                                    <h4>{schedule.course_name}</h4>
                                     <p>{schedule.course_code} • {schedule.section_name}</p>
                                 </div>
                                 <div className="class-meta">
@@ -356,7 +353,7 @@ const Dashboard = () => {
                             </div>
                         ))}
                         {(!schedules || schedules.length === 0) && (
-                            <p className="p-4 text-gray-500 text-sm">No classes assigned. Click "Add New Class" to get started.</p>
+                            <p className="empty-state">No classes assigned. Click "Add New Class" to get started.</p>
                         )}
                     </div>
                 </div>

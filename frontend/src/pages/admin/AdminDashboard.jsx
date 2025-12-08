@@ -57,25 +57,24 @@ const AdminDashboard = () => {
                 ))}
             </div>
 
-            <div className="admin-content-grid mt-8">
-                {/* Can add more detailed sections here later */}
-                <div className="bg-white p-6 rounded-xl shadow-sm">
-                    <h2 className="text-xl font-bold mb-4">Recent System Activity</h2>
-                    <div className="space-y-4">
+            <div className="dashboard-content mt-large">
+                <div className="activity-section">
+                    <h2 className="section-title">Recent System Activity</h2>
+                    <div className="activity-list">
                         {analytics?.recent_activity && analytics.recent_activity.length > 0 ? (
                             analytics.recent_activity.map(record => (
-                                <div key={record.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                                    <div>
-                                        <p className="font-semibold">{record.student_name}</p>
-                                        <p className="text-sm text-gray-500">Marked {record.status} for Class Session</p>
+                                <div key={record.id} className="activity-item">
+                                    <div className="activity-info">
+                                        <p className="activity-student">{record.student_name}</p>
+                                        <p className="activity-status">Marked {record.status} for Class Session</p>
                                     </div>
-                                    <span className="text-xs text-gray-400">
+                                    <span className="activity-time">
                                         {new Date(record.timestamp).toLocaleString()}
                                     </span>
                                 </div>
                             ))
                         ) : (
-                            <p className="text-gray-500">No recent activity recorded.</p>
+                            <p className="no-activity">No recent activity recorded.</p>
                         )}
                     </div>
                 </div>

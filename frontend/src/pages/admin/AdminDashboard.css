@@ -72,8 +72,75 @@
     color: #64748B;
 }
 
-.admin-content-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
+.mt-large {
+    margin-top: 2rem;
+}
+
+.activity-section {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #1E293B;
+}
+
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.activity-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #F8FAFC;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+
+.activity-item:hover {
+    background-color: #F1F5F9;
+}
+
+.activity-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.activity-student {
+    font-weight: 600;
+    color: #1E293B;
+    margin: 0;
+}
+
+.activity-status {
+    font-size: 0.875rem;
+    color: #64748B;
+    margin: 0;
+}
+
+.activity-time {
+    font-size: 0.75rem;
+    color: #94A3B8;
+}
+
+.no-activity {
+    color: #64748B;
+    text-align: center;
+    padding: 1rem;
+}
+
+@media (max-width: 768px) {
+    .admin-stats-grid {
+        grid-template-columns: 1fr;
+    }
 }

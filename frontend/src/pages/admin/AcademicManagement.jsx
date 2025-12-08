@@ -11,7 +11,7 @@ const AcademicManagement = () => {
         switch (activeTab) {
             case 'courses': return <CoursesTab axiosPrivate={axiosPrivate} />;
             case 'sections': return <SectionsTab axiosPrivate={axiosPrivate} />;
-            case 'programs': return <div className="p-8 text-center text-gray-500">Program Management Coming Soon</div>;
+            case 'programs': return <div className="empty-state">Program Management Coming Soon</div>;
             default: return null;
         }
     };
@@ -25,31 +25,25 @@ const AcademicManagement = () => {
                 </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="content-card">
                 <div className="tabs-header">
                     <button
                         className={`tab-btn ${activeTab === 'courses' ? 'active' : ''}`}
                         onClick={() => setActiveTab('courses')}
                     >
-                        <div className="flex items-center gap-2">
-                            <Book size={18} /> Courses
-                        </div>
+                        <Book size={18} /> Courses
                     </button>
                     <button
                         className={`tab-btn ${activeTab === 'sections' ? 'active' : ''}`}
                         onClick={() => setActiveTab('sections')}
                     >
-                        <div className="flex items-center gap-2">
-                            <Users size={18} /> Sections
-                        </div>
+                        <Users size={18} /> Sections
                     </button>
                     <button
                         className={`tab-btn ${activeTab === 'programs' ? 'active' : ''}`}
                         onClick={() => setActiveTab('programs')}
                     >
-                        <div className="flex items-center gap-2">
-                            <GraduationCap size={18} /> Programs
-                        </div>
+                        <GraduationCap size={18} /> Programs
                     </button>
                 </div>
 
@@ -63,25 +57,41 @@ const AcademicManagement = () => {
 
 const CoursesTab = ({ axiosPrivate }) => {
     const [courses, setCourses] = useState([]);
+    const [departments, setDepartments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [currentCourse, setCurrentCourse] = useState(null);
-    const [formData, setFormData] = useState({ code: '', name: '', description: '', units: 3 });
+    const [formData, setFormData] = useState({ code: '', name: '', description: '', units: 3, department: '' });
+
+    // Alert State
+    const [alertState, setAlertState] = useState({ isOpen: false, title: '', message: '', type: 'info', onConfirm: null });
 
     useEffect(() => {
-        fetchCourses();
+        fetchData();
     }, [axiosPrivate]);
 
-    const fetchCourses = async () => {
+    const fetchData = async () => {
         try {
-            const res = await axiosPrivate.get('/courses/');
-            setCourses(res.data);
+            const [courseRes, deptRes] = await Promise.all([
+                axiosPrivate.get('/courses/'),
+                axiosPrivate.get('/departments/')
+            ]);
+            setCourses(courseRes.data);
+            setDepartments(deptRes.data);
         } catch (err) {
-            console.error("Failed to fetch courses", err);
+            console.error("Failed to fetch data", err);
         } finally {
             setLoading(false);
         }
+    };
+
+    const showAlert = (title, message, type = 'info', onConfirm = null) => {
+        setAlertState({ isOpen: true, title, message, type, onConfirm });
+    };
+
+    const closeAlert = () => {
+        setAlertState({ ...alertState, isOpen: false });
     };
 
     const handleOpenModal = (course = null) => {
@@ -92,18 +102,22 @@ const CoursesTab = ({ axiosPrivate }) => {
         } else {
             setIsEditMode(false);
             setCurrentCourse(null);
-            setFormData({ code: '', name: '', description: '', units: 3 });
+            setFormData({ code: '', name: '', description: '', units: 3, department: '' });
         }
         setIsModalOpen(true);
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm("Delete this course?")) return;
+    const handleDeleteClick = (id) => {
+        showAlert('Delete Course', 'Are you sure you want to delete this course?', 'confirm', () => deleteCourse(id));
+    };
+
+    const deleteCourse = async (id) => {
         try {
             await axiosPrivate.delete(`/courses/${id}/`);
             setCourses(prev => prev.filter(c => c.id !== id));
+            showAlert('Success', 'Course deleted successfully.');
         } catch (err) {
-            alert("Failed to delete course.");
+            showAlert('Error', 'Failed to delete course.');
         }
     };
 
@@ -112,15 +126,17 @@ const CoursesTab = ({ axiosPrivate }) => {
         try {
             if (isEditMode) {
                 await axiosPrivate.put(`/courses/${currentCourse.id}/`, formData);
-                alert("Course updated!");
+                showAlert('Success', 'Course updated successfully.');
             } else {
                 await axiosPrivate.post('/courses/', formData);
-                alert("Course added!");
+                showAlert('Success', 'Course added successfully.');
             }
             setIsModalOpen(false);
-            fetchCourses();
+            fetchData();
         } catch (err) {
-            alert("Failed to save course.");
+            console.error("Save course error:", err);
+            const msg = err.response?.data?.detail || JSON.stringify(err.response?.data) || err.message;
+            showAlert('Error', 'Failed to save course: ' + msg);
         }
     };
 
@@ -139,6 +155,7 @@ const CoursesTab = ({ axiosPrivate }) => {
                         <tr>
                             <th>Code</th>
                             <th>Name</th>
+                            <th>Department</th>
                             <th>Units</th>
                             <th>Actions</th>
                         </tr>
@@ -148,26 +165,32 @@ const CoursesTab = ({ axiosPrivate }) => {
                             <tr key={course.id}>
                                 <td className="font-medium">{course.code}</td>
                                 <td>{course.name}</td>
+                                <td>{course.department_name}</td>
                                 <td>{course.units}</td>
                                 <td className="actions-cell">
                                     <button onClick={() => handleOpenModal(course)} className="btn-icon edit"><Users size={16} /></button>
-                                    <button onClick={() => handleDelete(course.id)} className="btn-icon delete"><GraduationCap size={16} /></button>
+                                    <button onClick={() => handleDeleteClick(course.id)} className="btn-icon delete"><GraduationCap size={16} /></button>
                                 </td>
                             </tr>
                         ))}
-                        {courses.length === 0 && !loading && <tr><td colSpan="4" style={{ textAlign: 'center', padding: '2rem', color: '#94A3B8' }}>No courses found.</td></tr>}
+                        {courses.length === 0 && !loading && <tr><td colSpan="5" className="empty-state">No courses found.</td></tr>}
                     </tbody>
                 </table>
             </div>
 
-            {/* Modal */}
+            {/* Form Modal */}
             {isModalOpen && (
                 <div className="modal-overlay">
                     <div className="modal-content">
                         <h2 className="modal-title">{isEditMode ? 'Edit Course' : 'Add Course'}</h2>
                         <form onSubmit={handleSubmit} className="modal-form">
+                            <select className="form-input" value={formData.department} onChange={e => setFormData({ ...formData, department: e.target.value })} required>
+                                <option value="">Select Department</option>
+                                {departments.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                            </select>
                             <input className="form-input" placeholder="Course Code (e.g., IT 101)" value={formData.code} onChange={e => setFormData({ ...formData, code: e.target.value })} required />
                             <input className="form-input" placeholder="Course Name" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required />
+                            <textarea className="form-input" placeholder="Description" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} rows={3} />
                             <input className="form-input" type="number" placeholder="Units" value={formData.units} onChange={e => setFormData({ ...formData, units: e.target.value })} required />
                             <div className="modal-actions">
                                 <button type="button" onClick={() => setIsModalOpen(false)} className="btn-cancel">Cancel</button>
@@ -177,16 +200,32 @@ const CoursesTab = ({ axiosPrivate }) => {
                     </div>
                 </div>
             )}
+
+            {/* Alert Modal */}
+            <AlertModal
+                isOpen={alertState.isOpen}
+                title={alertState.title}
+                message={alertState.message}
+                type={alertState.type}
+                onClose={closeAlert}
+                onConfirm={alertState.onConfirm}
+            />
         </div>
     );
 };
 
 const SectionsTab = ({ axiosPrivate }) => {
     const [sections, setSections] = useState([]);
-    const [courses, setCourses] = useState([]);
     const [teachers, setTeachers] = useState([]);
+    const [programs, setPrograms] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [formData, setFormData] = useState({ name: '', course: '', instructor: '', year_level: 1, semester: '1st' });
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [currentSection, setCurrentSection] = useState(null);
+    const [formData, setFormData] = useState({ section_name: '', program: '', instructor: '', year_level: 1 });
+
+    // Alert State
+    const [alertState, setAlertState] = useState({ isOpen: false, title: '', message: '', type: 'info', onConfirm: null });
+
 
     useEffect(() => {
         fetchData();
@@ -194,109 +233,201 @@ const SectionsTab = ({ axiosPrivate }) => {
 
     const fetchData = async () => {
         try {
-            const [secRes, courseRes, userRes] = await Promise.all([
+            const [secRes, userRes, progRes] = await Promise.all([
                 axiosPrivate.get('/sections/'),
-                axiosPrivate.get('/courses/'),
-                axiosPrivate.get('/users/?role=teacher') // Assuming filter exists or we filter client side
+                axiosPrivate.get('/users/?role=teacher'),
+                axiosPrivate.get('/programs/')
             ]);
             setSections(secRes.data);
-            setCourses(courseRes.data);
             setTeachers(userRes.data.filter(u => u.role === 'teacher'));
+            setPrograms(progRes.data);
         } catch (err) {
             console.error(err);
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm("Delete this section?")) return;
+    const showAlert = (title, message, type = 'info', onConfirm = null) => {
+        setAlertState({ isOpen: true, title, message, type, onConfirm });
+    };
+
+    const closeAlert = () => {
+        setAlertState({ ...alertState, isOpen: false });
+    };
+
+    const getProgramName = (id) => {
+        const prog = programs.find(p => p.id === id);
+        return prog ? `${prog.code}` : id;
+    };
+
+    const handleOpenModal = (section = null) => {
+        if (section) {
+            setIsEditMode(true);
+            setCurrentSection(section);
+            setFormData({
+                section_name: section.section_name,
+                program: section.program,
+                instructor: section.instructor,
+                year_level: section.year_level
+            });
+        } else {
+            setIsEditMode(false);
+            setCurrentSection(null);
+            setFormData({ section_name: '', program: '', instructor: '', year_level: 1 });
+        }
+        setIsModalOpen(true);
+    };
+
+    const handleDeleteClick = (id) => {
+        showAlert('Delete Section', 'Are you sure you want to delete this section?', 'confirm', () => deleteSection(id));
+    };
+
+    const deleteSection = async (id) => {
         try {
             await axiosPrivate.delete(`/sections/${id}/`);
             setSections(prev => prev.filter(s => s.id !== id));
+            showAlert('Success', 'Section deleted successfully.');
         } catch (err) {
-            alert("Failed to delete section.");
+            showAlert('Error', 'Failed to delete section.');
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axiosPrivate.post('/sections/', formData);
-            alert("Section created!");
+            if (isEditMode) {
+                await axiosPrivate.put(`/sections/${currentSection.id}/`, formData);
+                showAlert('Success', 'Section updated successfully.');
+            } else {
+                await axiosPrivate.post('/sections/', formData);
+                showAlert('Success', 'Section created successfully.');
+            }
             setIsModalOpen(false);
             fetchData();
         } catch (err) {
-            alert("Failed to create section.");
+            console.error("Save section error:", err);
+            const msg = err.response?.data?.detail || JSON.stringify(err.response?.data) || err.message;
+            showAlert('Error', 'Failed to save section: ' + msg);
         }
     };
 
     return (
         <div>
-            <div className="flex justify-between items-center mb-6">
-                <h3 className="text-lg font-bold text-gray-800">All Sections</h3>
-                <button onClick={() => setIsModalOpen(true)} className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm hover:bg-blue-700">
+            <div className="section-header">
+                <h3 className="section-title">All Sections</h3>
+                <button onClick={() => handleOpenModal()} className="btn-add">
                     <Users size={16} /> Create Section
                 </button>
             </div>
 
-            <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+            <div className="table-container">
+                <table className="data-table">
                     <thead>
-                        <tr className="border-b border-gray-200 text-gray-500 text-sm">
-                            <th className="py-3 px-4">Name</th>
-                            <th className="py-3 px-4">Course</th>
-                            <th className="py-3 px-4">Instructor</th>
-                            <th className="py-3 px-4">Level/Sem</th>
-                            <th className="py-3 px-4">Actions</th>
+                        <tr>
+                            <th>Section Name</th>
+                            <th>Program</th>
+                            <th>Instructor</th>
+                            <th>Year Level</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {sections.map(section => (
-                            <tr key={section.id} className="border-b border-gray-100 hover:bg-gray-50">
-                                <td className="py-3 px-4 font-medium text-gray-800">{section.name}</td>
-                                <td className="py-3 px-4 text-gray-600">{section.course_name || section.course}</td>
-                                <td className="py-3 px-4 text-gray-600">{section.instructor_name || section.instructor}</td>
-                                <td className="py-3 px-4 text-gray-600">{section.year_level} - {section.semester}</td>
-                                <td className="py-3 px-4 flex gap-2">
-                                    <button onClick={() => handleDelete(section.id)} className="text-red-500 hover:bg-red-50 p-1 rounded"><Layers size={16} /></button>
+                            <tr key={section.id}>
+                                <td className="font-medium">{section.section_name}</td>
+                                <td>{getProgramName(section.program)}</td>
+                                <td>{section.instructor_name || section.instructor}</td>
+                                <td>{section.year_level}</td>
+                                <td className="actions-cell">
+                                    <button onClick={() => handleOpenModal(section)} className="btn-icon edit"><Users size={16} /></button>
+                                    <button onClick={() => handleDeleteClick(section.id)} className="btn-icon delete"><Layers size={16} /></button>
                                 </td>
                             </tr>
                         ))}
-                        {sections.length === 0 && <tr><td colSpan="5" className="text-center p-4 text-gray-500">No sections found.</td></tr>}
+                        {sections.length === 0 && <tr><td colSpan="5" className="empty-state">No sections found.</td></tr>}
                     </tbody>
                 </table>
             </div>
 
             {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-xl w-full max-w-md">
-                        <h2 className="text-lg font-bold mb-4">Create Section</h2>
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <input className="w-full p-2 border rounded" placeholder="Section Name (e.g., A)" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required />
-                            <select className="w-full p-2 border rounded" value={formData.course} onChange={e => setFormData({ ...formData, course: e.target.value })} required>
-                                <option value="">Select Course</option>
-                                {courses.map(c => <option key={c.id} value={c.id}>{c.code} - {c.name}</option>)}
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h2 className="modal-title">{isEditMode ? 'Edit Section' : 'Create Section'}</h2>
+                        <form onSubmit={handleSubmit} className="modal-form">
+                            <input
+                                className="form-input"
+                                placeholder="Section Name (Optional - Auto-generated)"
+                                value={formData.section_name}
+                                onChange={e => setFormData({ ...formData, section_name: e.target.value })}
+                            />
+                            <select className="form-input" value={formData.program} onChange={e => setFormData({ ...formData, program: e.target.value })} required>
+                                <option value="">Select Program</option>
+                                {programs.map(p => <option key={p.id} value={p.id}>{p.code} - {p.name}</option>)}
                             </select>
-                            <select className="w-full p-2 border rounded" value={formData.instructor} onChange={e => setFormData({ ...formData, instructor: e.target.value })} required>
+                            <select className="form-input" value={formData.instructor} onChange={e => setFormData({ ...formData, instructor: e.target.value })} required>
                                 <option value="">Select Instructor</option>
                                 {teachers.map(t => <option key={t.id} value={t.id}>{t.firstname} {t.lastname}</option>)}
                             </select>
-                            <div className="grid grid-cols-2 gap-2">
-                                <input type="number" className="w-full p-2 border rounded" placeholder="Year Level" value={formData.year_level} onChange={e => setFormData({ ...formData, year_level: e.target.value })} required />
-                                <select className="w-full p-2 border rounded" value={formData.semester} onChange={e => setFormData({ ...formData, semester: e.target.value })}>
-                                    <option value="1st">1st Sem</option>
-                                    <option value="2nd">2nd Sem</option>
-                                </select>
-                            </div>
-                            <div className="flex justify-end gap-2 pt-2">
-                                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-gray-600">Cancel</button>
-                                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">Create</button>
+                            <label>Year Level</label>
+                            <input
+                                type="number"
+                                className="form-input"
+                                placeholder="Year Level"
+                                value={formData.year_level}
+                                onChange={e => setFormData({ ...formData, year_level: e.target.value })}
+                                required
+                                min="1"
+                                max="5"
+                            />
+                            <div className="modal-actions">
+                                <button type="button" onClick={() => setIsModalOpen(false)} className="btn-cancel">Cancel</button>
+                                <button type="submit" className="btn-save">{isEditMode ? 'Update' : 'Create'}</button>
                             </div>
                         </form>
                     </div>
                 </div>
             )}
+
+            {/* Alert Modal */}
+            <AlertModal
+                isOpen={alertState.isOpen}
+                title={alertState.title}
+                message={alertState.message}
+                type={alertState.type}
+                onClose={closeAlert}
+                onConfirm={alertState.onConfirm}
+            />
         </div>
     );
 }
+
+const AlertModal = ({ isOpen, title, message, type, onClose, onConfirm }) => {
+    if (!isOpen) return null;
+
+    const handleConfirm = () => {
+        if (onConfirm) onConfirm();
+        onClose();
+    };
+
+    return (
+        <div className="modal-overlay">
+            <div className={`modal-content alert-modal`}>
+                <h2 className="modal-title" style={{ textAlign: 'center', marginBottom: '0.5rem' }}>{title}</h2>
+                <div className="alert-message">
+                    {message}
+                </div>
+                <div className="modal-actions" style={{ justifyContent: 'center' }}>
+                    {type === 'confirm' ? (
+                        <>
+                            <button onClick={onClose} className="btn-cancel">Cancel</button>
+                            <button onClick={handleConfirm} className="btn-confirm">Confirm</button>
+                        </>
+                    ) : (
+                        <button onClick={onClose} className="btn-save">OK</button>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
 
 export default AcademicManagement;
