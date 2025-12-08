@@ -33,7 +33,7 @@ class SectionViewSet(viewsets.ModelViewSet):
     queryset = Section.objects.all()
     serializer_class = SectionSerializer
     def get_permissions(self):
-        if self.action in ['list', 'retrieve']:
+        if self.action in ['list', 'retrieve', 'public']:
              return [permissions.AllowAny()]
         return [permissions.IsAuthenticated(), IsTeacherOrAdmin()]
 
