@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import StudentProfile
+from .models import StudentProfile, ProfileEditRequest
 
 User = get_user_model()
 
@@ -42,3 +42,19 @@ class StudentProfileSerializer(serializers.ModelSerializer):
         model = StudentProfile
         fields = ['id', 'user', 'user_id', 'student_number', 'qr_code_data', 'sections', 'section_names']
         read_only_fields = ['qr_code_data']
+
+class ProfileEditRequestSerializer(serializers.ModelSerializer):
+    student_name = serializers.CharField(source='student.user.get_full_name', read_only=True)
+    student_number = serializers.CharField(source='student.student_number', read_only=True)
+
+    class Meta:
+        model = ProfileEditRequest
+        fields = ['id', 'student', 'student_name', 'student_number', 'new_firstname', 'new_lastname', 'reason', 'status', 'admin_note', 'created_at', 'updated_at', 'reviewed_by', 'reviewed_at']
+        read_only_fields = ['id', 'student', 'status', 'admin_note', 'created_at', 'updated_at', 'reviewed_by', 'reviewed_at']
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        if not hasattr(user, 'student_profile'):
+             raise serializers.ValidationError("Only students can create edit requests.")
+        validated_data['student'] = user.student_profile
+        return super().create(validated_data)

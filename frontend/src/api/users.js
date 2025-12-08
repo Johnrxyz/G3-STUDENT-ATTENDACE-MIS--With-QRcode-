@@ -48,6 +48,26 @@ export const getStudentsBySection = (sectionId, axiosInstance = axiosPrivate) =>
     return axiosInstance.get(`/student-profiles/?section=${sectionId}`);
 };
 
+export const createProfileEditRequest = async (data) => {
+    return axiosPrivate.post('/profile-requests/', data);
+};
+
+export const getMyProfileRequests = async () => {
+    return axiosPrivate.get('/profile-requests/');
+};
+
+export const getPendingRequests = async () => {
+    return axiosPrivate.get('/profile-requests/');
+};
+
+export const approveRequest = async (id) => {
+    return axiosPrivate.post(`/profile-requests/${id}/approve/`);
+};
+
+export const denyRequest = async (id, data) => {
+    return axiosPrivate.post(`/profile-requests/${id}/deny/`, data);
+};
+
 export default {
     getStudentProfile,
     getStudentsBySection,

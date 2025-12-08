@@ -30,3 +30,15 @@ export const scanAttendance = async (qrToken) => {
 export const getStudentAttendanceHistory = async () => {
     return axiosPrivate.get('/attendance/records/');
 };
+
+export const getCalendarHistory = async () => {
+    return axiosPrivate.get('/attendance/records/calendar/');
+};
+
+export const getSessionMonitoring = async (sessionId) => {
+    return axiosPrivate.get(`/attendance/sessions/${sessionId}/monitoring/`);
+};
+
+export const getAdminAnalytics = async () => {
+    return axiosPrivate.get('/analytics/summary/');
+};
