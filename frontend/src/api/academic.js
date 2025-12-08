@@ -10,6 +10,10 @@ export const getSections = async (axiosInstance = axiosPrivate) => {
     return axiosInstance.get('/sections/');
 };
 
+export const getPublicSections = async (axiosInstance = axiosPrivate) => {
+    return axiosInstance.get('/sections/public/');
+};
+
 export const getCourses = async (axiosInstance = axiosPrivate) => {
     return axiosInstance.get('/courses/');
 };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getSections } from '../api/academic';
+import { getPublicSections } from '../api/academic';
 import { register } from '../api/auth';
 import axios from '../api/axios'; // Public axios
 import './Register.css';
@@ -26,7 +26,7 @@ const Register = () => {
         // Fetch sections for dropdown
         const fetchSections = async () => {
             try {
-                const res = await getSections(axios);
+                const res = await getPublicSections(axios);
                 setSections(res.data);
             } catch (err) {
                 console.error("Failed to fetch sections", err);
