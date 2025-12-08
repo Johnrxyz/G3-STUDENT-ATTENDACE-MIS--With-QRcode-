@@ -166,6 +166,9 @@ const Login = () => {
                             <p className="login-signup-text">
                                 Don't have an account? <Link to="/register" className="login-signup-link">Create one here</Link>
                             </p>
+                            <div style={{ marginTop: '20px', fontSize: '0.7em', color: '#999', textAlign: 'center' }}>
+                                Debug API URL: {import.meta.env.VITE_API_URL || 'Not Set (Using Default)'}
+                            </div>
                         </form>
                     </div>
                 </div>
