@@ -4,9 +4,11 @@ import './AttendanceHistory.css';
 
 import useTeacher from '../../hooks/useTeacher';
 import { formatTime } from '../../utils/dateUtils';
+import { useNavigate } from 'react-router-dom';
 
 const AttendanceHistory = () => {
     const { sessions, loading } = useTeacher();
+    const navigate = useNavigate();
     const [viewMode, setViewMode] = useState('list');
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -146,7 +148,12 @@ const AttendanceHistory = () => {
                                             </span>
                                         </td>
                                         <td>
-                                            <button className="view-details-btn">View Details</button>
+                                            <button
+                                                className="view-details-btn"
+                                                onClick={() => navigate(`/teacher/history/session/${log.id}`)}
+                                            >
+                                                View Details
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}
@@ -218,6 +225,16 @@ const AttendanceHistory = () => {
                                                 {cls.status}
                                             </span>
                                         </div>
+                                        <button
+                                            className="view-details-btn"
+                                            style={{ marginTop: '0.75rem', width: '100%' }}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                navigate(`/teacher/history/session/${cls.id}`);
+                                            }}
+                                        >
+                                            View Details
+                                        </button>
                                     </div>
                                 ))
                             ) : (

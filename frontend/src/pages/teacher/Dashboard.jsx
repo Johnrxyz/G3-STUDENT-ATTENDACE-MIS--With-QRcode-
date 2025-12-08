@@ -254,7 +254,7 @@ const Dashboard = () => {
 
     const totalStudents = schedules?.reduce((acc, sch) => acc + (sch.student_count || 0), 0) || 0;
     const totalClasses = schedules?.length || 0;
-    const activeSessions = sessions?.filter(s => s.is_active).length || 0;
+    const activeSessions = sessions?.filter(s => !s.closed_at).length || 0;
 
     const stats = [
         { title: 'Total Students', value: totalStudents.toString(), icon: Users, color: '#5465FF', trend: 'Enrolled' },
@@ -335,8 +335,8 @@ const Dashboard = () => {
                                         <h4>{session.course_name || 'Class Session'}</h4>
                                         <p>{new Date(session.created_at || session.date).toLocaleString()}</p>
                                     </div>
-                                    <span className={`status-badge ${session.is_active ? 'in-progress' : 'completed'}`}>
-                                        {session.is_active ? 'Active' : 'Ended'}
+                                    <span className={`status-badge ${!session.closed_at ? 'in-progress' : 'completed'}`}>
+                                        {!session.closed_at ? 'Active' : 'Ended'}
                                     </span>
                                 </div>
                             ))

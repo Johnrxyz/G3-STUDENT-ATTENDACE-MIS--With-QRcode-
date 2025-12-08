@@ -150,12 +150,24 @@ class AttendanceRecordViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        queryset = AttendanceRecord.objects.all()
+
         if user.role == 'teacher':
-             return AttendanceRecord.objects.filter(session__schedule__section__instructor=user)
-        if user.role == 'student':
+             queryset = AttendanceRecord.objects.filter(session__schedule__section__instructor=user)
+        elif user.role == 'student':
              # Students only see their own records
-             return AttendanceRecord.objects.filter(student__user=user)
-        return AttendanceRecord.objects.all()
+             queryset = AttendanceRecord.objects.filter(student__user=user)
+        
+        # Apply filters
+        student_id = self.request.query_params.get('student_id')
+        schedule_id = self.request.query_params.get('schedule_id')
+        
+        if student_id:
+            queryset = queryset.filter(student_id=student_id)
+        if schedule_id:
+            queryset = queryset.filter(session__schedule_id=schedule_id)
+            
+        return queryset
 
     @action(detail=False, methods=['get'], permission_classes=[IsStudent])
     def calendar(self, request):

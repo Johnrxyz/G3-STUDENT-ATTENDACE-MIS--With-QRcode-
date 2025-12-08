@@ -56,10 +56,10 @@ const StudentList = () => {
     return (
         <div className="student-list-page">
             <button
-                onClick={() => navigate('/teacher/dashboard')}
+                onClick={() => navigate('/teacher/classes')}
                 className="back-btn"
             >
-                <ArrowLeft size={18} /> Back to Dashboard
+                <ArrowLeft size={18} /> Back to Classes
             </button>
 
             <div className="class-header">
@@ -126,7 +126,12 @@ const StudentList = () => {
                                             <span className="status-badge">Active</span>
                                         </td>
                                         <td>
-                                            <button className="btn-link">View History</button>
+                                            <button
+                                                className="btn-link"
+                                                onClick={() => navigate(`/teacher/classes/${schedule.id}/student/${student.id}`)}
+                                            >
+                                                View History
+                                            </button>
                                         </td>
                                     </tr>
                                 ))

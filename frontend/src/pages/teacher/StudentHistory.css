@@ -1,0 +1,200 @@
+.student-history-page {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.back-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: none;
+    color: #64748B;
+    cursor: pointer;
+    margin-bottom: 2rem;
+    font-weight: 500;
+}
+
+.back-btn:hover {
+    color: #1E293B;
+}
+
+.history-header-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.student-profile-summary {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.profile-icon {
+    width: 64px;
+    height: 64px;
+    background: #EEF2FF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.student-history-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1E293B;
+    margin: 0;
+}
+
+.student-history-id {
+    color: #64748B;
+    margin: 0.25rem 0 0 0;
+}
+
+.history-class-info {
+    text-align: right;
+}
+
+.history-class-info h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1E293B;
+    margin: 0;
+}
+
+.history-class-info p {
+    color: #64748B;
+    margin: 0.25rem 0 0 0;
+}
+
+.history-stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F1F5F9;
+    color: #64748B;
+}
+
+.stat-icon.present {
+    background: #DCFCE7;
+    color: #16A34A;
+}
+
+.stat-icon.late {
+    background: #FFEDD5;
+    color: #EA580C;
+}
+
+.stat-icon.absent {
+    background: #FEE2E2;
+    color: #DC2626;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1E293B;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #64748B;
+}
+
+.records-list-container {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.records-title {
+    padding: 1.5rem 2rem;
+    margin: 0;
+    border-bottom: 1px solid #E2E8F0;
+    font-size: 1.125rem;
+    color: #1E293B;
+}
+
+.records-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.records-table th {
+    text-align: left;
+    padding: 1rem 2rem;
+    background: #F8FAFC;
+    color: #64748B;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.records-table td {
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #F1F5F9;
+    color: #334155;
+}
+
+.status-badge-pill {
+    display: inline-flex;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.status-badge-pill.present {
+    background: #DCFCE7;
+    color: #166534;
+}
+
+.status-badge-pill.late {
+    background: #FFEDD5;
+    color: #9A3412;
+}
+
+.status-badge-pill.absent {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+.empty-history {
+    padding: 4rem;
+    text-align: center;
+    color: #94A3B8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
