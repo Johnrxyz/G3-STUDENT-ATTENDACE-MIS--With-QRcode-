@@ -1,0 +1,63 @@
+.calendar-tile {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  padding: 10px;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: transform 0.1s ease-in-out;
+  border: 1px solid #eee;
+}
+
+.calendar-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.tile-day-number {
+  font-size: 0.8rem;
+  color: #aaa;
+  font-weight: 500;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.tile-events {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tile-event-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-present { background-color: #4CAF50; } /* Green */
+.status-absent { background-color: #F44336; } /* Red */
+.status-late { background-color: #FFC107; } /* Yellow */
+.status-excused { background-color: #2196F3; } /* Blue */
+
+.subject-info {
+  font-size: 0.85rem;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.no-events {
+    font-size: 0.8rem;
+    color: #ccc;
+    text-align: center;
+}

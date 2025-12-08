@@ -1,181 +1,116 @@
-/* Student Dashboard Styles */
-.student-dashboard {
-    padding: 0;
+.student-dashboard-revised {
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 80vh;
 }
 
-.dashboard-header {
-    margin-bottom: 2rem;
+.dashboard-header-simple {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-.dashboard-header h1 {
-    font-size: 2rem;
-    color: #050C44;
-    margin-bottom: 0.5rem;
+.dashboard-header-simple h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
 }
 
-.dashboard-header p {
-    color: #6B7280;
+.date-time {
+    color: #666;
     font-size: 1rem;
 }
 
-/* Stats Grid */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
+.scanner-container {
+    width: 100%;
+    max-width: 400px;
+    background: #000;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-.stat-card {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+.scanner-viewport {
+    width: 100%;
+    aspect-ratio: 1;
+    /* Square */
+    position: relative;
 }
 
-.stat-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 10px;
+.qr-reader-component video {
+    object-fit: cover !important;
+}
+
+.scanner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-sizing: border-box;
+    pointer-events: none;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.stat-content h3 {
-    font-size: 1.75rem;
-    color: #050C44;
-    margin-bottom: 0.25rem;
+.scan-line {
+    width: 80%;
+    height: 2px;
+    background: #00ff00;
+    box-shadow: 0 0 10px #00ff00;
+    animation: scan 2s infinite linear;
 }
 
-.stat-content p {
-    color: #6B7280;
-    font-size: 0.9rem;
-}
-
-/* Dashboard Section */
-.dashboard-section {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 12px;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.dashboard-section h2 {
-    font-size: 1.25rem;
-    color: #050C44;
-    margin-bottom: 1.5rem;
-}
-
-/* Schedule List */
-.schedule-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.schedule-item {
-    display: grid;
-    grid-template-columns: 120px 1fr auto;
-    gap: 1.5rem;
-    padding: 1rem;
-    border: 1px solid #E5E7EB;
-    border-radius: 8px;
-    align-items: center;
-}
-
-.schedule-time {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.schedule-time .time {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #050C44;
-}
-
-.schedule-time .duration {
-    font-size: 0.85rem;
-    color: #6B7280;
-}
-
-.schedule-details h3 {
-    font-size: 1rem;
-    color: #050C44;
-    margin-bottom: 0.25rem;
-}
-
-.schedule-details p {
-    font-size: 0.9rem;
-    color: #6B7280;
-}
-
-.status-badge {
-    padding: 0.4rem 0.8rem;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    font-weight: 600;
-}
-
-.status-badge.completed {
-    background-color: #D1FAE5;
-    color: #10B981;
-}
-
-.status-badge.upcoming {
-    background-color: #DBEAFE;
-    color: #2563EB;
-}
-
-.status-badge.absent {
-    background-color: #FEE2E2;
-    color: #EF4444;
-}
-
-/* Attendance Table */
-.attendance-table {
-    overflow-x: auto;
-}
-
-.attendance-table table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.attendance-table th {
-    text-align: left;
-    padding: 0.75rem;
-    background-color: #F9FAFB;
-    color: #6B7280;
-    font-weight: 600;
-    font-size: 0.9rem;
-    border-bottom: 1px solid #E5E7EB;
-}
-
-.attendance-table td {
-    padding: 0.75rem;
-    border-bottom: 1px solid #E5E7EB;
-    color: #050C44;
-}
-
-.attendance-table tbody tr:hover {
-    background-color: #F9FAFB;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .schedule-item {
-        grid-template-columns: 1fr;
-        gap: 1rem;
+@keyframes scan {
+    0% {
+        transform: translateY(-100px);
+        opacity: 0;
     }
 
-    .stats-grid {
-        grid-template-columns: 1fr;
+    20% {
+        opacity: 1;
     }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+}
+
+.scan-status-indicator {
+    padding: 15px;
+    text-align: center;
+    font-weight: 500;
+    background: #fff;
+    border-top: 1px solid #eee;
+    color: #333;
+    transition: all 0.3s;
+}
+
+.status-success {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-error {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.dashboard-footer-hint {
+    margin-top: 20px;
+    color: #888;
+    font-size: 0.9rem;
+    text-align: center;
 }

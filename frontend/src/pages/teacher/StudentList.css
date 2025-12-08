@@ -1,153 +1,199 @@
 .student-list-page {
     width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
 }
 
-.page-title {
-    color: var(--nav);
-    font-size: 2.5rem;
+.back-btn {
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #64748B;
+    font-size: 0.95rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: color 0.2s;
+    padding: 0;
+    margin-bottom: 1.5rem;
+}
+
+.back-btn:hover {
+    color: #2563eb;
+}
+
+.class-header {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #F1F5F9;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.class-title-group h1 {
+    font-size: 1.5rem;
     font-weight: 700;
-    margin-bottom: 2rem;
+    color: #1E293B;
+    margin: 0 0 0.25rem 0;
+}
+
+.class-subtitle {
+    font-size: 1rem;
+    color: #64748B;
+    margin: 0;
+}
+
+.class-schedule-info {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #2563eb;
+    margin-top: 0.5rem;
+}
+
+.btn-generate-qr {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-generate-qr:hover {
+    background-color: #1d4ed8;
 }
 
 .content-card {
     background-color: white;
-    border-radius: 24px;
-    padding: 2rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .controls-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.controls-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1E293B;
+    margin: 0;
 }
 
 .search-wrapper {
     position: relative;
+    max-width: 280px;
     width: 100%;
-    max-width: 400px;
 }
 
 .search-input {
     width: 100%;
-    padding: 0.75rem 1rem;
-    padding-right: 2.5rem;
+    padding: 0.5rem 1rem 0.5rem 2.2rem;
     border: 1px solid #E2E8F0;
-    border-radius: 50px;
-    background-color: #F8FAFC;
-    font-size: 1rem;
+    border-radius: 8px;
     outline: none;
-    transition: all 0.2s;
+    font-size: 0.9rem;
 }
 
 .search-input:focus {
-    border-color: var(--primary-blue);
-    background-color: white;
-    box-shadow: 0 0 0 3px rgba(84, 101, 255, 0.1);
+    border-color: #5465FF;
 }
 
 .search-icon {
     position: absolute;
-    right: 1rem;
+    left: 0.7rem;
     top: 50%;
     transform: translateY(-50%);
     color: #94A3B8;
-    pointer-events: none;
 }
 
-.btn-add-student {
-    background-color: #5465FF;
-    color: white;
-    border: none;
-    padding: 0.75rem 2rem;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.btn-add-student:hover {
-    background-color: #4050E0;
-}
-
+/* Table */
 .students-table-container {
     overflow-x: auto;
 }
 
 .students-table {
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 1rem;
+    border-collapse: collapse;
 }
 
 .students-table th {
     text-align: left;
-    color: #1E293B;
-    font-weight: 700;
-    padding: 0 1.5rem;
-    padding-bottom: 0.5rem;
-    font-size: 0.95rem;
-}
-
-.students-table tbody tr {
-    background-color: #F8FAFC;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-    transition: transform 0.2s;
-}
-
-.students-table tbody tr:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    padding: 1rem;
+    font-weight: 600;
+    color: #64748B;
+    font-size: 0.85rem;
+    border-bottom: 1px solid #E2E8F0;
 }
 
 .students-table td {
-    padding: 1.25rem 1.5rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #F8FAFC;
+    vertical-align: middle;
+}
+
+.student-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.student-avatar {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: #F1F5F9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
     color: #64748B;
-    font-size: 0.95rem;
-}
-
-.students-table td:first-child {
-    border-top-left-radius: 12px;
-    border-bottom-left-radius: 12px;
-}
-
-.students-table td:last-child {
-    border-top-right-radius: 12px;
-    border-bottom-right-radius: 12px;
 }
 
 .student-name {
-    color: #334155;
     font-weight: 500;
-}
-
-.action-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #3B82F6;
-    padding: 0.5rem;
-    border-radius: 50%;
-    transition: background-color 0.2s;
-}
-
-.action-btn:hover {
-    background-color: #EFF6FF;
+    color: #1E293B;
 }
 
 .status-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background-color: #DCFCE7;
+    color: #166534;
+}
+
+.btn-link {
+    background: none;
+    border: none;
+    color: #2563eb;
     font-size: 0.9rem;
-    font-weight: 500;
+    cursor: pointer;
+    padding: 0;
 }
 
-.status-badge.fda {
-    color: #64748B;
+.btn-link:hover {
+    text-decoration: underline;
 }
 
-.status-badge.not-fda {
-    color: #64748B;
+.loading-state,
+.empty-state {
+    padding: 3rem;
+    text-align: center;
+    color: #94A3B8;
 }

@@ -16,6 +16,11 @@ import ScanQR from './pages/student/ScanQR';
 import ClassSchedule from './pages/student/ClassSchedule';
 import StudentAttendanceHistory from './pages/student/AttendanceHistory';
 import StudentProfile from './pages/student/StudentProfile';
+import AdminNav from './layouts/AdminNav';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import RequestManagement from './pages/admin/RequestManagement';
+import UserList from './pages/admin/UserList';
+import AcademicManagement from './pages/admin/AcademicManagement';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 import './App.css';
@@ -39,6 +44,16 @@ function App() {
               <Route path="classes" element={<ClassList />} />
               <Route path="classes/:id" element={<StudentList />} />
               <Route path="history" element={<AttendanceHistory />} />
+            </Route>
+          </Route>
+
+          <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+            <Route path="/admin" element={<AdminNav />}>
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="requests" element={<RequestManagement />} />
+              <Route path="users" element={<UserList />} />
+              <Route path="academic" element={<AcademicManagement />} />
             </Route>
           </Route>
 

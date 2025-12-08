@@ -1,15 +1,35 @@
 import { axiosPrivate } from './axios';
 
-export const getClasses = async () => {
+export const getClasses = async (axiosInstance = axiosPrivate) => {
     // ClassScheduleViewSet
-    return axiosPrivate.get('/schedules/');
+    return axiosInstance.get('/schedules/');
 };
 
-export const getSections = async () => {
+export const getSections = async (axiosInstance = axiosPrivate) => {
     // SectionViewSet
-    return axiosPrivate.get('/sections/');
+    return axiosInstance.get('/sections/');
 };
 
-export const getCourses = async () => {
-    return axiosPrivate.get('/courses/');
+export const getCourses = async (axiosInstance = axiosPrivate) => {
+    return axiosInstance.get('/courses/');
+};
+
+export const createSection = async (data, axiosInstance = axiosPrivate) => {
+    return axiosInstance.post('/sections/', data);
+};
+
+export const getPrograms = async (axiosInstance = axiosPrivate) => {
+    return axiosInstance.get('/programs/');
+};
+
+export const getDays = async (axiosInstance = axiosPrivate) => {
+    return axiosInstance.get('/days/');
+};
+
+export const createSchedule = async (data, axiosInstance = axiosPrivate) => {
+    return axiosInstance.post('/schedules/', data);
+};
+
+export const getSchedule = async (id, axiosInstance = axiosPrivate) => {
+    return axiosInstance.get(`/schedules/${id}/`);
 };

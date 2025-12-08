@@ -1,214 +1,182 @@
 import React, { useState, useEffect } from 'react';
 import useStudent from '../../hooks/useStudent';
+import { createProfileEditRequest, getMyProfileRequests } from '../../api/users';
 import './StudentProfile.css';
 
 const StudentProfile = () => {
     const { profile, loading } = useStudent();
-    const [formData, setFormData] = useState({
-        name: '',
-        studentId: '',
-        section: '',
-        age: '',
-        course: '',
-        address: '',
-        status: '',
-        gender: ''
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [requestData, setRequestData] = useState({
+        new_firstname: '',
+        new_lastname: '',
+        reason: ''
     });
+    const [requests, setRequests] = useState([]);
+    const [msg, setMsg] = useState('');
 
     useEffect(() => {
         if (profile) {
-            setFormData({
-                name: profile.user?.get_full_name || `${profile.user?.firstname} ${profile.user?.lastname}`,
-                studentId: profile.student_number || '',
-                section: 'Mapped Section', // Need to map sections if available
-                age: '20', // Placeholder as age not in model
-                course: 'BSIT', // Placeholder
-                address: 'Quezon City', // Placeholder
-                status: 'Regular', // Placeholder
-                gender: profile.user?.gender || ''
-            });
+            setRequestData(prev => ({
+                ...prev,
+                new_firstname: profile.user?.firstname || '',
+                new_lastname: profile.user?.lastname || ''
+            }));
+            fetchRequests();
         }
     }, [profile]);
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
+    const fetchRequests = async () => {
+        try {
+            const res = await getMyProfileRequests();
+            setRequests(res.data);
+        } catch (err) {
+            console.error(err);
+        }
     };
 
-    const handleSubmit = (e) => {
+    const handleRequestChange = (e) => {
+        setRequestData({ ...requestData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmitRequest = async (e) => {
         e.preventDefault();
-        alert('Profile update not yet implemented in backend.');
+        try {
+            await createProfileEditRequest(requestData);
+            setMsg('Request submitted successfully.');
+            setShowEditModal(false);
+            fetchRequests();
+            setTimeout(() => setMsg(''), 3000);
+        } catch (err) {
+            console.error(err);
+            setMsg('Failed to submit request.');
+        }
     };
 
     if (loading) return <div className="p-8 text-center">Loading profile...</div>;
 
-    const enrolledCourses = [
-        {
-            title: 'Object oriented programming',
-            icon: '💻',
-            color: '#818CF8'
-        },
-        {
-            title: 'Fundamentals of database systems',
-            icon: '📊',
-            color: '#A78BFA'
-        }
-    ];
+    const fullName = profile?.user?.firstname && profile?.user?.lastname
+        ? `${profile.user.firstname} ${profile.user.lastname}`
+        : profile?.user?.username || 'Student';
 
     return (
         <div className="student-profile-page">
-            {/* Welcome Banner */}
             <div className="welcome-banner">
                 <div className="banner-content">
-                    <p className="banner-date">{new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
-                    <h1>Welcome back, {profile?.user?.firstname || 'Student'}!</h1>
-                    <p className="banner-subtitle">
-                        {formData.section && `${formData.section} • `}
-                        Always stay updated in your portal
-                    </p>
-                </div>
-                <div className="banner-image">
-                    <div className="decorative-dots">
-                        <span className="dot dot-1"></span>
-                        <span className="dot dot-2"></span>
-                        <span className="dot dot-3"></span>
-                        <span className="dot dot-4"></span>
-                    </div>
-                    <img
-                        src="/assets/College Student.png"
-                        alt="Student Avatar"
-                        className="student-character"
-                    />
-                    <img
-                        src="/assets/Scholarcap scroll.png"
-                        alt="Graduation Cap"
-                        className="graduation-cap"
-                    />
-                    <img
-                        src="/assets/Backpack.png"
-                        alt="Backpack"
-                        className="backpack"
-                    />
+                    <h1>{fullName}</h1>
+                    <p>{profile?.student_number}</p>
                 </div>
             </div>
 
-            {/* Student Dashboard Form */}
+            {msg && <div className="alert-success">{msg}</div>}
+
             <div className="dashboard-card">
-                <h2>Student Dashboard</h2>
-                <form onSubmit={handleSubmit} className="profile-form">
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label>Name</label>
-                            <input
-                                type="text"
-                                name="name"
-                                placeholder="Enter your name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                disabled // Read only for now unless backend updated
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Student ID</label>
-                            <input
-                                type="text"
-                                name="studentId"
-                                placeholder="Enter your student ID"
-                                value={formData.studentId}
-                                disabled
-                            />
-                        </div>
-                    </div>
-
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label>Section</label>
-                            <input
-                                type="text"
-                                name="section"
-                                placeholder="Enter your section"
-                                value={formData.section}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Age</label>
-                            <input
-                                type="text"
-                                name="age"
-                                placeholder="Enter your age"
-                                value={formData.age}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Course</label>
-                            <input
-                                type="text"
-                                name="course"
-                                placeholder="Enter your course"
-                                value={formData.course}
-                                onChange={handleChange}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label>Address</label>
-                            <input
-                                type="text"
-                                name="address"
-                                placeholder="Enter your address"
-                                value={formData.address}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Status</label>
-                            <input
-                                type="text"
-                                name="status"
-                                placeholder="Enter your status"
-                                value={formData.status}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>Gender</label>
-                            <input
-                                type="text"
-                                name="gender"
-                                placeholder="Enter your gender"
-                                value={formData.gender}
-                                onChange={handleChange}
-                            />
-                        </div>
-                    </div>
-
-                    <button type="submit" className="save-btn">
-                        Edit Information
+                <div className="profile-section-header">
+                    <h2>Personal Information</h2>
+                    <button
+                        className="btn-primary"
+                        onClick={() => setShowEditModal(true)}
+                    >
+                        Request Edit
                     </button>
-                </form>
-            </div>
+                </div>
 
-            {/* Enrolled Courses */}
-            <div className="enrolled-section">
-                <h2>Enrolled Course</h2>
-                <div className="courses-grid">
-                    {enrolledCourses.map((course, index) => (
-                        <div key={index} className="course-card" style={{ backgroundColor: course.color }}>
-                            <div className="course-content">
-                                <h3>{course.title}</h3>
-                                <button className="view-btn">View</button>
-                            </div>
-                            <div className="course-icon">{course.icon}</div>
+                <div className="profile-details-grid">
+                    <div className="detail-item">
+                        <label>First Name</label>
+                        <p>{profile?.user?.firstname}</p>
+                    </div>
+                    <div className="detail-item">
+                        <label>Last Name</label>
+                        <p>{profile?.user?.lastname}</p>
+                    </div>
+                    <div className="detail-item">
+                        <label>Email</label>
+                        <p>{profile?.user?.email}</p>
+                    </div>
+                    <div className="detail-item">
+                        <label>Student Number</label>
+                        <p>{profile?.student_number}</p>
+                    </div>
+                </div>
+
+                <div className="edit-requests-section">
+                    <h3>Edit Requests Status</h3>
+                    {requests.length === 0 ? <p className="empty-state">No pending requests.</p> : (
+                        <div className="request-list">
+                            {requests.map(req => (
+                                <div key={req.id} className="request-item">
+                                    <div>
+                                        <div className="request-info-name">{req.new_firstname} {req.new_lastname}</div>
+                                        <div className="request-info-reason">Reason: {req.reason}</div>
+                                        <div className="request-info-date">{new Date(req.created_at).toLocaleDateString()}</div>
+                                    </div>
+                                    <span className={`request-status ${req.status}`}>
+                                        {req.status}
+                                    </span>
+                                </div>
+                            ))}
                         </div>
-                    ))}
+                    )}
                 </div>
             </div>
+
+            {showEditModal && (
+                <div className="modal-overlay">
+                    <div className="modal-card">
+                        <h3 className="modal-title">Request Profile Edit</h3>
+                        <form onSubmit={handleSubmitRequest}>
+                            <div className="form-group">
+                                <label className="form-label">New First Name</label>
+                                <input
+                                    type="text"
+                                    name="new_firstname"
+                                    value={requestData.new_firstname}
+                                    onChange={handleRequestChange}
+                                    className="form-input"
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">New Last Name</label>
+                                <input
+                                    type="text"
+                                    name="new_lastname"
+                                    value={requestData.new_lastname}
+                                    onChange={handleRequestChange}
+                                    className="form-input"
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Reason for Change</label>
+                                <textarea
+                                    name="reason"
+                                    value={requestData.reason}
+                                    onChange={handleRequestChange}
+                                    className="form-textarea"
+                                    rows="3"
+                                    required
+                                />
+                            </div>
+                            <div className="modal-actions">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowEditModal(false)}
+                                    className="btn-cancel"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="btn-submit"
+                                >
+                                    Submit Request
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

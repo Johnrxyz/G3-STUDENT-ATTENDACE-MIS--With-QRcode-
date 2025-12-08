@@ -1,3 +1,4 @@
+/* TeacherNav.css */
 .teacher-layout {
   display: flex;
   flex-direction: column;
@@ -9,10 +10,12 @@
   display: flex;
   flex: 1;
   position: relative;
+  overflow-x: hidden;
+  /* Prevent horizontal scroll on mobile */
 }
 
 .sidebar {
-  width: 300px;
+  width: 280px;
   height: 100vh;
   background-color: #050C44;
   color: var(--white);
@@ -20,12 +23,13 @@
   flex-direction: column;
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 50;
   border-right: 1px solid rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
 }
 
 .logo {
-  padding: 2.5rem 2rem;
+  padding: 2rem 1.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
@@ -34,29 +38,38 @@
 
 .logo-text {
   font-family: var(--font-montserrat);
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
   line-height: 1;
   color: white;
 }
 
+.logo-subtitle {
+  display: block;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 400;
+  margin-top: 0.25rem;
+}
+
 .nav-menu {
   flex: 1;
-  padding: 2rem 1.5rem;
+  padding: 1.5rem 1rem;
+  overflow-y: auto;
 }
 
 .nav-item {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1rem 1.5rem;
+  padding: 0.875rem 1.25rem;
   border-radius: 8px;
   color: rgba(255, 255, 255, 0.7);
   transition: all 0.2s ease;
   font-family: var(--font-poppins);
   font-weight: 500;
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 0.95rem;
   margin-bottom: 0.5rem;
 }
 
@@ -77,6 +90,8 @@
   position: relative;
   background-color: #F5F7FA;
   overflow-x: hidden;
+  width: 100%;
+  /* Ensure full width */
 }
 
 .main-content::before {
@@ -85,7 +100,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 400px;
+  height: 300px;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23D6EFFF' fill-opacity='1' d='M0,160L80,170.7C160,181,320,203,480,197.3C640,192,800,160,960,149.3C1120,139,1280,149,1360,154.7L1440,160L1440,0L1360,0C1280,0,1120,0,960,0C800,0,640,0,480,0C320,0,160,0,80,0L0,0Z'%3E%3C/path%3E%3C/svg%3E");
   background-size: cover;
   background-repeat: no-repeat;
@@ -100,4 +115,89 @@
   margin: 0 auto;
   position: relative;
   z-index: 1;
+}
+
+/* Mobile Toggle Button */
+.menu-toggle {
+  display: none;
+  /* Hidden on desktop */
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 60;
+  /* Above sidebar */
+  background-color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  color: #1E293B;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 40;
+  /* Below sidebar, above content */
+  backdrop-filter: blur(2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    transform: translateX(-100%);
+    /* Hidden by default */
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+    width: 260px;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .menu-toggle {
+    display: flex;
+  }
+
+  .overlay.open {
+    display: block;
+  }
+
+  .content-wrapper {
+    padding: 1.5rem;
+    /* Reduced padding on tablet */
+    margin-top: 3rem;
+    /* Space for toggle button */
+  }
+
+  .main-content::before {
+    height: 250px;
+  }
+}
+
+@media (max-width: 425px) {
+  .content-wrapper {
+    padding: 1rem;
+    /* Reduced padding on mobile */
+  }
+
+  .logo {
+    padding: 2rem 1rem;
+  }
+
+  .nav-menu {
+    padding: 1rem;
+  }
 }

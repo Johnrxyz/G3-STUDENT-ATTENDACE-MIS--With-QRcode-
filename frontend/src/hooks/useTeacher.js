@@ -29,7 +29,7 @@ const useTeacher = () => {
     };
 
     useEffect(() => {
-        if (auth?.user?.role === 'teacher') {
+        if (auth?.user?.role === 'teacher' || auth?.user?.role === 'admin') {
             fetchTeacherData();
         }
     }, [auth]);

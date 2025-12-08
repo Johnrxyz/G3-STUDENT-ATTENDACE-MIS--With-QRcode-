@@ -67,8 +67,8 @@ const LiveAttendance = () => {
         }
     };
 
-    if (sessionsLoading) return <div className="p-8">Loading...</div>;
-    if (!selectedSessionId) return <div className="p-8">No active session found. Start a session from "Generate QR".</div>;
+    if (sessionsLoading) return <div className="loading-screen">Loading...</div>;
+    if (!selectedSessionId) return <div className="loading-screen">No active session found. Start a session from "Generate QR".</div>;
 
     const currentSession = sessions.find(s => s.id === selectedSessionId);
 

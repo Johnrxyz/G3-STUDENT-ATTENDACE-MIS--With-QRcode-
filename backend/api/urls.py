@@ -5,17 +5,18 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenBlacklistView,
 )
-from users.views import UserViewSet, StudentProfileViewSet, CustomTokenObtainPairView
+from users.views import UserViewSet, StudentProfileViewSet, CustomTokenObtainPairView, ProfileEditRequestViewSet
 from attendance.views import (
     DepartmentViewSet, ProgramViewSet, CourseViewSet, SectionViewSet, 
     DayViewSet, ClassScheduleViewSet, AttendanceSessionViewSet, 
-    AttendanceRecordViewSet, ScanViewSet
+    AttendanceRecordViewSet, ScanViewSet, AnalyticsViewSet
 )
 from qr.views import ScanDeviceViewSet, AuditLogViewSet, SystemSettingsViewSet
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'student-profiles', StudentProfileViewSet)
+router.register(r'profile-requests', ProfileEditRequestViewSet)
 router.register(r'departments', DepartmentViewSet)
 router.register(r'programs', ProgramViewSet)
 router.register(r'courses', CourseViewSet)
@@ -25,6 +26,7 @@ router.register(r'schedules', ClassScheduleViewSet)
 router.register(r'attendance/sessions', AttendanceSessionViewSet)
 router.register(r'attendance/records', AttendanceRecordViewSet)
 router.register(r'attendance/scan', ScanViewSet, basename='scan')
+router.register(r'analytics', AnalyticsViewSet, basename='analytics')
 router.register(r'qr/devices', ScanDeviceViewSet)
 router.register(r'qr/logs', AuditLogViewSet)
 router.register(r'qr/settings', SystemSettingsViewSet)

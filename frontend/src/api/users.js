@@ -6,6 +6,10 @@ export const getUserProfile = async (id) => {
     return axiosPrivate.get(`/users/${id}/`);
 };
 
+export const getAllUsers = async (axiosInstance = axiosPrivate) => {
+    return axiosInstance.get('/users/');
+};
+
 export const getStudentProfile = async () => {
     // StudentProfileViewSet has logic to return current student's profile?
     // Or we need to filter?
@@ -46,6 +50,26 @@ export const getMyEnrolledSections = async () => {
 
 export const getStudentsBySection = (sectionId, axiosInstance = axiosPrivate) => {
     return axiosInstance.get(`/student-profiles/?section=${sectionId}`);
+};
+
+export const createProfileEditRequest = async (data) => {
+    return axiosPrivate.post('/profile-requests/', data);
+};
+
+export const getMyProfileRequests = async () => {
+    return axiosPrivate.get('/profile-requests/');
+};
+
+export const getPendingRequests = async (axiosInstance = axiosPrivate) => {
+    return axiosInstance.get('/profile-requests/');
+};
+
+export const approveRequest = async (id, axiosInstance = axiosPrivate) => {
+    return axiosInstance.post(`/profile-requests/${id}/approve/`);
+};
+
+export const denyRequest = async (id, data, axiosInstance = axiosPrivate) => {
+    return axiosInstance.post(`/profile-requests/${id}/deny/`, data);
 };
 
 export default {

@@ -37,3 +37,24 @@ class StudentProfile(models.Model):
 
     def __str__(self):
         return f"{self.student_number} - {self.user.email}"
+
+class ProfileEditRequest(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('denied', 'Denied'),
+    )
+
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, related_name='edit_requests')
+    new_firstname = models.CharField(max_length=50)
+    new_lastname = models.CharField(max_length=50)
+    reason = models.TextField()
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    admin_note = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    reviewed_by = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='reviewed_requests', limit_choices_to={'role': 'admin'})
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Request by {self.student.user.get_full_name()} - {self.status}"

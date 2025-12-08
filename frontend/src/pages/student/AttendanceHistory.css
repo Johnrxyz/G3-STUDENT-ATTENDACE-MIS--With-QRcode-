@@ -1,340 +1,95 @@
-/* Student Attendance History Styles */
 .student-attendance-history {
-    padding: 0;
-    background: linear-gradient(180deg, #E0F2FE 0%, #FFFFFF 100%);
-    min-height: 100vh;
-    padding: 2rem;
-}
-
-.attendance-header {
-    text-align: center;
-    margin-bottom: 2rem;
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
 }
 
 .attendance-header h1 {
-    font-size: 2.5rem;
-    color: #1E40AF;
-    font-weight: 700;
-    margin: 0;
-}
-
-/* Calendar Container */
-.calendar-container {
-    max-width: 800px;
-    margin: 0 auto 2rem;
-    background: white;
-    border-radius: 20px;
-    padding: 2rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-}
-
-.calendar-header h2 {
     font-size: 1.5rem;
-    color: #1F2937;
-    margin: 0;
+    margin-bottom: 20px;
+    color: #333;
 }
 
-.month-nav-btn {
-    background: #F3F4F6;
-    border: none;
-    border-radius: 8px;
-    padding: 0.5rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    transition: background-color 0.2s;
-}
-
-.month-nav-btn:hover {
-    background-color: #E5E7EB;
-}
-
-/* Calendar Grid */
-.calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 0.5rem;
-}
-
-.calendar-day-header {
-    text-align: center;
-    font-weight: 600;
-    color: #6B7280;
-    padding: 0.75rem;
-    font-size: 0.9rem;
-}
-
-.calendar-day {
-    aspect-ratio: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
-    background: #BFDBFE;
-    color: #1F2937;
-    font-weight: 500;
-    transition: all 0.2s;
-}
-
-.calendar-day.empty {
-    background: transparent;
-}
-
-.calendar-day.clickable {
-    cursor: pointer;
-}
-
-.calendar-day.clickable:hover {
-    transform: scale(1.05);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.calendar-day.present {
-    background: #4ADE80;
-    color: white;
-}
-
-.calendar-day.absent {
-    background: #EF4444;
-    color: white;
-}
-
-.calendar-day.late {
-    background: #EC4899;
-    color: white;
-}
-
-/* Calendar Legend */
-.calendar-legend {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #E5E7EB;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    color: #6B7280;
-}
-
-.legend-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-}
-
-.legend-dot.present {
-    background: #4ADE80;
-}
-
-.legend-dot.absent {
-    background: #EF4444;
-}
-
-.legend-dot.late {
-    background: #EC4899;
-}
-
-/* Monthly Summary */
-.monthly-summary {
-    max-width: 800px;
-    margin: 0 auto 2rem;
-    background: white;
-    border-radius: 16px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.monthly-summary h3 {
-    font-size: 1.25rem;
-    color: #1F2937;
-    margin-bottom: 1rem;
-}
-
-.summary-cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-}
-
-.summary-card {
-    background: #BFDBFE;
-    border-radius: 12px;
-    padding: 1.5rem;
-    text-align: center;
-}
-
-.summary-card.present {
-    background: #D1FAE5;
-}
-
-.summary-card.absent {
-    background: #FEE2E2;
-}
-
-.summary-card.late {
-    background: #FCE7F3;
-}
-
-.summary-value {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #1F2937;
-    margin-bottom: 0.25rem;
-}
-
-.summary-label {
-    font-size: 0.9rem;
-    color: #6B7280;
-}
-
-/* Alerts Banner */
-.alerts-banner {
-    max-width: 800px;
-    margin: 0 auto;
-    background: #FEF3C7;
-    border-left: 4px solid #F59E0B;
-    padding: 1rem 1.5rem;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-weight: 500;
-    color: #92400E;
-}
-
-.alert-icon {
-    font-size: 1.25rem;
-}
-
-/* Modal */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-
-.modal-content {
-    background: white;
-    border-radius: 16px;
-    width: 90%;
-    max-width: 500px;
-    max-height: 80vh;
-    overflow-y: auto;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-}
-
-.modal-header {
+.calendar-controls {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.5rem;
-    border-bottom: 1px solid #E5E7EB;
+    margin-bottom: 20px;
 }
 
-.modal-header h3 {
+.calendar-controls h2 {
     font-size: 1.25rem;
-    color: #1F2937;
-    margin: 0;
+    font-weight: 600;
 }
 
-.close-btn {
+.calendar-controls button {
     background: none;
     border: none;
     cursor: pointer;
-    color: #6B7280;
-    padding: 0.25rem;
-    display: flex;
-    align-items: center;
+    padding: 8px;
+    border-radius: 50%;
 }
 
-.close-btn:hover {
-    color: #1F2937;
+.calendar-controls button:hover {
+    background-color: #f0f0f0;
 }
 
-.modal-body {
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+.calendar-grid-revised {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
 }
 
-.attendance-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    border-radius: 8px;
-    background: #F9FAFB;
-}
-
-.item-info h4 {
-    font-size: 1rem;
-    color: #1F2937;
-    margin: 0 0 0.25rem 0;
-}
-
-.item-info p {
-    font-size: 0.85rem;
-    color: #6B7280;
-    margin: 0;
-}
-
-.status-badge {
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
+.calendar-day-label {
+    text-align: center;
     font-weight: 600;
-    font-size: 0.85rem;
+    color: #666;
+    padding-bottom: 10px;
 }
 
-.status-badge.present {
-    background: #D1FAE5;
-    color: #10B981;
+.calendar-cell {
+    min-height: 100px;
+    /* Ensure tiles have height */
 }
 
-.status-badge.absent {
-    background: #FEE2E2;
-    color: #EF4444;
+.calendar-tile-empty {
+    padding: 10px;
+    color: #ddd;
+    font-size: 0.8rem;
+    height: 100%;
+    background: #fafafa;
+    border-radius: 8px;
 }
 
-.status-badge.late {
-    background: #FCE7F3;
-    color: #EC4899;
-}
-
-/* Responsive */
 @media (max-width: 768px) {
-
-    .calendar-container,
-    .monthly-summary {
-        padding: 1rem;
-    }
-
-    .calendar-day-header {
-        font-size: 0.75rem;
-        padding: 0.5rem;
-    }
-
-    .summary-cards {
+    .calendar-grid-revised {
         grid-template-columns: 1fr;
+        /* List view on mobile? Or condensed grid? */
+        /* Requirement says "Responsiveness among all device". 
+           Standard calendar usually shrinks or goes list. 
+           But let's try to keep 7-col layout if possible or 1-col list of "Days with events" plus empty days?
+           Usually on phone, monthly calendar squares are tiny.
+           If strict tile content is required (subject names), it won't fit in 1/7th of phone screen.
+           So on mobile, we should probably switch to a Vertical List of days?
+        */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .calendar-day-label {
+        display: none;
+    }
+
+    .calendar-cell.empty {
+        display: none;
+    }
+
+    .calendar-tile-empty {
+        display: none;
+        /* Hide empty days on mobile to save space? Or show them? */
+    }
+
+    .calendar-cell {
+        width: 100%;
     }
 }

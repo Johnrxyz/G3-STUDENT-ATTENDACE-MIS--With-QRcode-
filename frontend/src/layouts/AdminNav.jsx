@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
-import { LayoutDashboard, Users, QrCode, Radio, History, LogOut, ScanLine, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Users, FileText, Settings, ShieldCheck, Book, Menu, X } from 'lucide-react';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
-import './TeacherNav.css';
+import './TeacherNav.css'; // Reusing TeacherNav styles as base
 
-const TeacherNav = () => {
+const AdminNav = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const toggleSidebar = () => {
@@ -18,10 +18,10 @@ const TeacherNav = () => {
 
     const navItems = [
         { path: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-        { path: 'classes', icon: Users, label: 'Class List' },
-        { path: 'generate-qr', icon: QrCode, label: 'Generate QR' },
-        { path: 'live-attendance', icon: Radio, label: 'Live Attendance' },
-        { path: 'history', icon: History, label: 'Attendance History' },
+        { path: 'requests', icon: FileText, label: 'Requests' },
+        { path: 'users', icon: Users, label: 'User Management' },
+        { path: 'academic', icon: Book, label: 'Academic' }, // New Link
+        // { path: 'settings', icon: Settings, label: 'Settings' },
     ];
 
     return (
@@ -35,10 +35,11 @@ const TeacherNav = () => {
             <div className="layout-body">
                 <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
                     <div className="logo">
-                        <ScanLine size={32} color="#5465FF" strokeWidth={2.5} />
+                        <ShieldCheck size={32} color="#5465FF" strokeWidth={2.5} />
                         <div>
                             <h2 className="logo-text">
                                 AttendEase
+                                <span className="logo-subtitle">Admin Portal</span>
                             </h2>
                         </div>
                     </div>
@@ -73,4 +74,4 @@ const TeacherNav = () => {
     );
 };
 
-export default TeacherNav;
+export default AdminNav;
