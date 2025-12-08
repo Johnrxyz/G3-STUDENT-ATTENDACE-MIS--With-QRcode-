@@ -1,0 +1,128 @@
+.session-details-page {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.session-header-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+}
+
+.session-title-group h1 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1E293B;
+    margin: 0 0 0.5rem 0;
+}
+
+.session-title-group p {
+    color: #64748B;
+    font-size: 1.125rem;
+    margin: 0;
+}
+
+.session-meta-grid {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #E2E8F0;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #334155;
+    font-weight: 500;
+}
+
+.session-stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.attendees-list-container {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.section-title {
+    padding: 1.5rem 2rem;
+    margin: 0;
+    border-bottom: 1px solid #E2E8F0;
+    font-size: 1.125rem;
+    color: #1E293B;
+}
+
+.attendees-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.attendees-table th {
+    text-align: left;
+    padding: 1rem 2rem;
+    background: #F8FAFC;
+    color: #64748B;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.attendees-table td {
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #F1F5F9;
+    color: #334155;
+}
+
+.student-info-cell {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-weight: 500;
+}
+
+.avatar-placeholder {
+    width: 32px;
+    height: 32px;
+    background: #EEF2FF;
+    color: #4F46E5;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.status-badge-pill {
+    display: inline-flex;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.status-badge-pill.present {
+    background: #DCFCE7;
+    color: #166534;
+}
+
+.status-badge-pill.late {
+    background: #FFEDD5;
+    color: #9A3412;
+}
+
+.status-badge-pill.absent {
+    background: #FEE2E2;
+    color: #991B1B;
+}

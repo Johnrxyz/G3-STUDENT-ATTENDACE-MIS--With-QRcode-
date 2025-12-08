@@ -20,12 +20,15 @@
     color: var(--white);
     display: flex;
     flex-direction: column;
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
     z-index: 50;
     border-right: 1px solid rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease-in-out;
 }
+
+/* ... existing logo styles ... */
 
 .logo {
     padding: 2rem 1.5rem;
@@ -34,6 +37,8 @@
     align-items: center;
     gap: 1rem;
 }
+
+/* ... existing styles ... */
 
 .logo-text {
     font-family: var(--font-montserrat);
@@ -82,6 +87,8 @@
     background-color: #F5F7FA;
     overflow-x: hidden;
     width: 100%;
+    margin-left: 280px;
+    min-height: 100vh;
 }
 
 /* Background wave */
@@ -162,6 +169,10 @@
     .content-wrapper {
         padding: 1.5rem;
         margin-top: 3rem;
+    }
+
+    .main-content {
+        margin-left: 0;
     }
 
     .main-content::before {

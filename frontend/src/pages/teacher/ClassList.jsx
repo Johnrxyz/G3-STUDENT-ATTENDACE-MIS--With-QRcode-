@@ -2,6 +2,7 @@ import React from 'react';
 import { Clock, MapPin, Users, QrCode, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import useTeacher from '../../hooks/useTeacher';
+import { formatTime } from '../../utils/dateUtils';
 import './ClassList.css';
 
 const ClassList = () => {
@@ -13,7 +14,7 @@ const ClassList = () => {
         id: sch.id,
         code: sch.course_code || 'N/A', // Added field
         name: sch.course_name || 'Unknown Course',
-        schedule: `${sch.day_names.join(', ')} ${sch.start_time}-${sch.end_time}`,
+        schedule: `${sch.day_names.join(', ')} ${formatTime(sch.start_time)}-${formatTime(sch.end_time)}`,
         room: sch.room,
         students: sch.student_count || 0, // Added field
         section: sch.section_name

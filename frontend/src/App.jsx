@@ -7,6 +7,8 @@ import ClassList from './pages/teacher/ClassList';
 import StudentList from './pages/teacher/StudentList';
 import Dashboard from './pages/teacher/Dashboard';
 import AttendanceHistory from './pages/teacher/AttendanceHistory';
+import StudentHistory from './pages/teacher/StudentHistory';
+import SessionDetails from './pages/teacher/SessionDetails';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -43,7 +45,9 @@ function App() {
               <Route path="live-attendance" element={<LiveAttendance />} />
               <Route path="classes" element={<ClassList />} />
               <Route path="classes/:id" element={<StudentList />} />
+              <Route path="classes/:scheduleId/student/:studentId" element={<StudentHistory />} />
               <Route path="history" element={<AttendanceHistory />} />
+              <Route path="history/session/:sessionId" element={<SessionDetails />} />
             </Route>
           </Route>
 

@@ -11,3 +11,6 @@ export const logout = async (refreshToken) => {
 export const refresh = async (refreshToken) => {
     return axios.post('/auth/refresh/', { refresh: refreshToken });
 };
+export const register = async (userData) => {
+    return axios.post('/auth/register/', userData);
+};

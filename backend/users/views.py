@@ -87,15 +87,13 @@ class ProfileEditRequestViewSet(viewsets.ModelViewSet):
         profile_request.save()
         return Response({'status': 'approved'})
 
-    @action(detail=True, methods=['post'], permission_classes=[IsAdmin])
-    def deny(self, request, pk=None):
-        profile_request = self.get_object()
-        if profile_request.status != 'pending':
-            return Response({'error': 'Request is not pending'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        profile_request.status = 'denied'
-        profile_request.admin_note = request.data.get('admin_note', '')
-        profile_request.reviewed_by = request.user
-        profile_request.reviewed_at = timezone.now()
         profile_request.save()
         return Response({'status': 'denied'})
+
+from rest_framework import generics
+from .serializers import StudentRegistrationSerializer
+
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    permission_classes = [permissions.AllowAny]
+    serializer_class = StudentRegistrationSerializer

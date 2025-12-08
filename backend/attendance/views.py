@@ -32,12 +32,17 @@ class CourseViewSet(viewsets.ModelViewSet):
 class SectionViewSet(viewsets.ModelViewSet):
     queryset = Section.objects.all()
     serializer_class = SectionSerializer
-    permission_classes = [permissions.IsAuthenticated, IsTeacherOrAdmin]
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+             return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated(), IsTeacherOrAdmin()]
 
     def get_queryset(self):
-        user = self.request.user
-        if user.role == 'teacher':
-            return Section.objects.filter(instructor=user)
+        # Allow unrestricted access for list calls (for registration)
+        # But for specific user views, we could filter.
+        # Given the requirements, public list is acceptable.
+        if self.request.user.is_authenticated and self.request.user.role == 'teacher':
+             return Section.objects.filter(instructor=self.request.user)
         return Section.objects.all()
 
     def perform_create(self, serializer):
@@ -54,12 +59,15 @@ class DayViewSet(viewsets.ModelViewSet):
 class ClassScheduleViewSet(viewsets.ModelViewSet):
     queryset = ClassSchedule.objects.all()
     serializer_class = ClassScheduleSerializer
-    permission_classes = [permissions.IsAuthenticated, IsTeacherOrAdmin]
+    permission_classes = [permissions.IsAuthenticated, IsTeacherOrAdmin | IsStudent]
 
     def get_queryset(self):
         user = self.request.user
         if user.role == 'teacher':
             return ClassSchedule.objects.filter(section__instructor=user)
+        if user.role == 'student':
+            # Filter schedules where the section has this student
+            return ClassSchedule.objects.filter(section__students__user=user)
         return ClassSchedule.objects.all()
 
 class AttendanceSessionViewSet(viewsets.ModelViewSet):
@@ -142,12 +150,24 @@ class AttendanceRecordViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        queryset = AttendanceRecord.objects.all()
+
         if user.role == 'teacher':
-             return AttendanceRecord.objects.filter(session__schedule__section__instructor=user)
-        if user.role == 'student':
+             queryset = AttendanceRecord.objects.filter(session__schedule__section__instructor=user)
+        elif user.role == 'student':
              # Students only see their own records
-             return AttendanceRecord.objects.filter(student__user=user)
-        return AttendanceRecord.objects.all()
+             queryset = AttendanceRecord.objects.filter(student__user=user)
+        
+        # Apply filters
+        student_id = self.request.query_params.get('student_id')
+        schedule_id = self.request.query_params.get('schedule_id')
+        
+        if student_id:
+            queryset = queryset.filter(student_id=student_id)
+        if schedule_id:
+            queryset = queryset.filter(session__schedule_id=schedule_id)
+            
+        return queryset
 
     @action(detail=False, methods=['get'], permission_classes=[IsStudent])
     def calendar(self, request):
