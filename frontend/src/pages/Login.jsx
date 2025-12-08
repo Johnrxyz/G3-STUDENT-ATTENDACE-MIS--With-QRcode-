@@ -43,7 +43,8 @@ const Login = () => {
                 }).join(''));
                 const user = JSON.parse(jsonPayload);
 
-                if (user.role === 'teacher' || user.role === 'admin') navigate('/teacher/dashboard');
+                if (user.role === 'admin') navigate('/admin/dashboard');
+                else if (user.role === 'teacher') navigate('/teacher/dashboard');
                 else if (user.role === 'student') navigate('/student/dashboard');
                 else {
                     console.warn('Unknown role:', user.role);

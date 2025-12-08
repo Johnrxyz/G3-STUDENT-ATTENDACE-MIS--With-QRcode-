@@ -1,3 +1,4 @@
+import useStudent from '../hooks/useStudent';
 import React from 'react';
 import { Bell } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +8,17 @@ import './Header.css';
 const Header = () => {
     const { auth, logout } = useAuth();
     const navigate = useNavigate();
+
+    // Fetch fresh student data if applicable
+    const { profile: studentProfile } = useStudent();
+
     const currentUser = auth.user || {};
+
+    // Determine display name: prefer fresh profile data over token data
+    let displayName = currentUser.full_name || currentUser.username || 'User';
+    if (currentUser.role === 'student' && studentProfile?.user) {
+        displayName = `${studentProfile.user.firstname} ${studentProfile.user.lastname}`;
+    }
 
     const handleLogout = () => {
         logout();
@@ -24,7 +35,7 @@ const Header = () => {
                         className="avatar"
                     />
                     <div className="user-details">
-                        <span className="user-name">{currentUser.full_name || currentUser.username || 'User'}</span>
+                        <span className="user-name">{displayName}</span>
                         <span className="user-role">
                             {currentUser.role ? currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1) : 'Student'}
                         </span>

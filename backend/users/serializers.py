@@ -44,6 +44,7 @@ class StudentProfileSerializer(serializers.ModelSerializer):
         read_only_fields = ['qr_code_data']
 
 class ProfileEditRequestSerializer(serializers.ModelSerializer):
+    student = StudentProfileSerializer(read_only=True)
     student_name = serializers.CharField(source='student.user.get_full_name', read_only=True)
     student_number = serializers.CharField(source='student.student_number', read_only=True)
 

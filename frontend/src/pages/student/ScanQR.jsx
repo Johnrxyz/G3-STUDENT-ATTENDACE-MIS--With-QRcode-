@@ -1,49 +1,43 @@
 import React, { useState } from 'react';
-import { QrReader } from 'react-qr-reader';
-import { Camera, CheckCircle, XCircle, QrCode } from 'lucide-react';
+import QRScanner from '../../components/scanner/QRScanner';
+import { CheckCircle, XCircle, QrCode, Camera } from 'lucide-react';
 import { scanAttendance } from '../../api/attendance';
 import './ScanQR.css';
 
 const ScanQR = () => {
     const [scanning, setScanning] = useState(false);
     const [scanResult, setScanResult] = useState(null);
-    const [error, setError] = useState(null);
 
-    const handleResult = async (result, error) => {
-        if (!!result) {
+    const handleScan = async (text) => {
+        if (!text) return;
+
+        setScanning(false);
+        try {
+            // Call API
+            const response = await scanAttendance(text);
+            setScanResult({
+                success: true,
+                data: response.data,
+                text: text
+            });
+        } catch (err) {
             setScanning(false);
-            try {
-                // Call API
-                const response = await scanAttendance(result?.text);
-                setScanResult({
-                    success: true,
-                    data: response.data,
-                    text: result?.text
-                });
-            } catch (err) {
-                setScanning(false);
-                setError(err.response?.data?.error || "Scanning failed");
-                setScanResult({
-                    success: false,
-                    error: err.response?.data?.error
-                });
-            }
-        }
-        if (!!error) {
-            console.info(error);
+            console.error("Scan error:", err);
+            setScanResult({
+                success: false,
+                error: err.response?.data?.error || "Scanning failed"
+            });
         }
     };
 
     const handleStartScan = () => {
         setScanning(true);
         setScanResult(null);
-        setError(null);
     };
 
     const handleReset = () => {
         setScanResult(null);
         setScanning(false);
-        setError(null);
     };
 
     return (
@@ -71,13 +65,8 @@ const ScanQR = () => {
 
                     {scanning && (
                         <div className="scan-active">
-                            <div className="scanner-frame">
-                                <QrReader
-                                    onResult={handleResult}
-                                    constraints={{ facingMode: 'environment' }}
-                                    style={{ width: '100%' }}
-                                />
-                                <p className="scanning-text">Scanning...</p>
+                            <div className="scanner-frame-wrapper">
+                                <QRScanner onScan={handleScan} />
                             </div>
                             <button className="reset-button" onClick={() => setScanning(false)}>Cancel</button>
                         </div>

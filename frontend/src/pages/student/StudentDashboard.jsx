@@ -1,62 +1,61 @@
 import React, { useState, useEffect } from 'react';
-import { QrReader } from 'react-qr-reader';
+import QRScanner from '../../components/scanner/QRScanner';
 import { scanAttendance } from '../../api/attendance';
 import useAuth from '../../hooks/useAuth';
+import useStudent from '../../hooks/useStudent';
 import './StudentDashboard.css';
 
 const StudentDashboard = () => {
     const { auth } = useAuth();
-    const [scanStatus, setScanStatus] = useState('idle'); // idle, scanning, success, error
+    const { profile } = useStudent(); // Fetch fresh profile data
+    const [scanStatus, setScanStatus] = useState('scanning'); // idle, scanning, success, error
     const [statusMessage, setStatusMessage] = useState('');
     const [lastScanned, setLastScanned] = useState(null);
 
-    const handleResult = async (result, error) => {
-        if (!!result) {
-            const text = result?.text;
-            if (text === lastScanned) return; // Prevent duplicate rapid scans locally
+    const handleScan = async (text) => {
+        if (!text) return;
+        if (text === lastScanned && scanStatus === 'success') return; // Prevent duplicate success triggers
 
-            try {
-                // Determine if we should process this scan
-                // Basic debounce or check if we just scanned this
-                setLastScanned(text);
-                setScanStatus('processing');
+        try {
+            setLastScanned(text);
+            setScanStatus('processing');
 
-                const response = await scanAttendance(text);
+            // Requirement: "Silent behavior... auto-refresh... no pop-ups"
+            // The dashboard shows status text, so we update that.
+
+            const response = await scanAttendance(text);
+            setScanStatus('success');
+            setStatusMessage('Attendance Marked: ' + (response.data.attendance_status || "Success"));
+
+            // Clear success message after 3 seconds and return to scanning state
+            setTimeout(() => {
+                setScanStatus('scanning');
+                setStatusMessage('');
+                setLastScanned(null); // Allow re-scan after timeout if needed? Or keep it to prevent spam? 
+                // Requirement says "cooldown... automatic reactivation".
+                // Clearing lastScanned allows same code to be scanned again after 3s if needed.
+            }, 3000);
+
+        } catch (err) {
+            console.error(err);
+            if (err.response?.status === 200 || err.response?.status === 409) {
+                // 409 or 200 might mean duplicate. 
+                // If the backend returns 200 for duplicate with a message, we handle it as success-ish
                 setScanStatus('success');
-                setStatusMessage('Attendance Marked: ' + response.data.attendance_status);
-
-                // Clear success message after 3 seconds
-                setTimeout(() => {
-                    setScanStatus('scanning');
-                    setStatusMessage('');
-                }, 3000);
-
-            } catch (err) {
-                // Silent fail or small indicator? Requirement: "Only returns status to backend silently"
-                // But user needs to know if it worked?
-                // "Silent recording... Only returns status to backend silently" might mean no blocking UI.
-                console.error(err);
-                if (err.response?.status === 200) {
-                    // 200 OK means duplicate/already recorded, which is fine
-                    setScanStatus('success');
-                    setStatusMessage('Already recorded');
-                } else {
-                    setScanStatus('error');
-                    setStatusMessage(err.response?.data?.error || "Scan failed");
-                }
-
-                setTimeout(() => {
-                    setScanStatus('scanning');
-                    setStatusMessage('');
-                }, 3000);
+                setStatusMessage('Already recorded');
+            } else {
+                setScanStatus('error');
+                setStatusMessage(err.response?.data?.error || "Scan failed");
             }
+
+            setTimeout(() => {
+                setScanStatus('scanning');
+                setStatusMessage('');
+            }, 3000);
         }
     };
 
-    // Auto-start scanning? Requirement: "Main Scanner (priority)"
-    // So yes, it should probably be active or easily activatable.
-    // "Scanner always visible" - implies active.
-
+    // Initial clock setup
     const [dateTime, setDateTime] = useState(new Date());
     useEffect(() => {
         const timer = setInterval(() => setDateTime(new Date()), 1000);
@@ -66,7 +65,7 @@ const StudentDashboard = () => {
     return (
         <div className="student-dashboard-revised">
             <div className="dashboard-header-simple">
-                <h1>Hello, {auth.user?.firstname || 'Student'}</h1>
+                <h1>Hello, {profile?.user?.firstname || auth.user?.firstname || 'Student'}</h1>
                 <p className="date-time">{dateTime.toLocaleString(undefined, {
                     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
                 })}</p>
@@ -74,19 +73,11 @@ const StudentDashboard = () => {
 
             <div className="scanner-container">
                 <div className="scanner-viewport">
-                    <QrReader
-                        onResult={handleResult}
-                        constraints={{ facingMode: 'environment' }}
-                        className="qr-reader-component"
-                        scanDelay={500}
-                    />
-                    <div className="scanner-overlay">
-                        <div className="scan-line"></div>
-                    </div>
+                    <QRScanner onScan={handleScan} />
                 </div>
                 <div className={`scan-status-indicator status-${scanStatus}`}>
-                    {scanStatus === 'idle' && "Ready to Scan"}
-                    {scanStatus === 'scanning' && "Looking for QR Code..."}
+                    {scanStatus === 'idle' && "Initializing Camera..."}
+                    {scanStatus === 'scanning' && "Ready to Scan"}
                     {scanStatus === 'processing' && "Verifying..."}
                     {scanStatus === 'success' && statusMessage}
                     {scanStatus === 'error' && statusMessage}

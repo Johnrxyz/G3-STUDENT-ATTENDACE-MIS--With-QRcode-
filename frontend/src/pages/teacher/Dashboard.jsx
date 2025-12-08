@@ -23,7 +23,8 @@ const AddClassModal = ({ isOpen, onClose, onClassAdded }) => {
         course: '',
         days: [], // IDs
         start_time: '',
-        end_time: ''
+        end_time: '',
+        room: ''
     });
 
     useEffect(() => {
@@ -64,7 +65,8 @@ const AddClassModal = ({ isOpen, onClose, onClassAdded }) => {
                 section: sectionId,
                 days: scheduleData.days,
                 start_time: scheduleData.start_time,
-                end_time: scheduleData.end_time
+                end_time: scheduleData.end_time,
+                room: scheduleData.room
             });
 
             onClassAdded();
@@ -73,7 +75,7 @@ const AddClassModal = ({ isOpen, onClose, onClassAdded }) => {
             setStep(1);
             setSelectedSectionId('');
             setNewSectionData({ program: '', year_level: '' });
-            setScheduleData({ course: '', days: [], start_time: '', end_time: '' });
+            setScheduleData({ course: '', days: [], start_time: '', end_time: '', room: '' });
 
         } catch (err) {
             console.error(err);
@@ -182,6 +184,18 @@ const AddClassModal = ({ isOpen, onClose, onClassAdded }) => {
                                     </button>
                                 ))}
                             </div>
+                        </div>
+
+                        <div className="form-group mb-4">
+                            <label className="form-label text-sm">Room</label>
+                            <input
+                                type="text"
+                                className="form-input"
+                                value={scheduleData.room}
+                                onChange={(e) => setScheduleData({ ...scheduleData, room: e.target.value })}
+                                placeholder="e.g. Room 305"
+                                required
+                            />
                         </div>
 
                         <div className="form-row">

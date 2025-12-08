@@ -35,6 +35,13 @@ class SectionViewSet(viewsets.ModelViewSet):
     serializer_class = SectionSerializer
     permission_classes = [AllowAny]
 
+    def perform_create(self, serializer):
+        user = self.request.user
+        if user.is_authenticated and user.role == 'teacher':
+             serializer.save(instructor=user)
+        else:
+             serializer.save()
+
 class ProgramViewSet(viewsets.ModelViewSet):
     queryset = Program.objects.all()
     serializer_class = ProgramSerializer

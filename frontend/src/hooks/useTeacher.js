@@ -53,7 +53,7 @@ const useTeacher = () => {
         }
     };
 
-    return { sessions, schedules, loading, handleOpenSession, handleCloseSession, refetch: fetchTeacherData };
+    return { sessions, schedules, loading, handleOpenSession, handleCloseSession, refreshData: fetchTeacherData };
 };
 
 export default useTeacher;
