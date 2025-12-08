@@ -1,0 +1,79 @@
+.admin-dashboard-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 1rem;
+}
+
+.admin-title {
+    font-family: var(--font-montserrat);
+    font-size: 2rem;
+    font-weight: 700;
+    color: #050C44;
+    margin-bottom: 0.5rem;
+}
+
+.admin-welcome {
+    font-family: var(--font-poppins);
+    color: #64748B;
+    font-size: 1rem;
+}
+
+.admin-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+.admin-stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.admin-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-stat-content h3 {
+    font-family: var(--font-montserrat);
+    font-size: 2rem;
+    font-weight: 700;
+    color: #050C44;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.admin-stat-content p {
+    font-family: var(--font-poppins);
+    font-size: 0.9rem;
+    color: #64748B;
+}
+
+.admin-content-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}

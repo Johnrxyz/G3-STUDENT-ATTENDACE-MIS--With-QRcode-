@@ -3,6 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model
 from .models import Department, Program, Course, Section, Day, ClassSchedule, AttendanceSession, AttendanceRecord
 from api.serializers import (
     DepartmentSerializer, ProgramSerializer, CourseSerializer, SectionSerializer, 
@@ -10,6 +11,8 @@ from api.serializers import (
 )
 from users.permissions import IsAdmin, IsTeacher, IsStudent, IsTeacherOrAdmin, IsAdminOrReadOnly
 from users.models import StudentProfile
+
+User = get_user_model()
 
 class DepartmentViewSet(viewsets.ModelViewSet):
     queryset = Department.objects.all()
@@ -70,13 +73,13 @@ class AttendanceSessionViewSet(viewsets.ModelViewSet):
             return AttendanceSession.objects.filter(schedule__section__instructor=user)
         return AttendanceSession.objects.all()
 
-    @action(detail=False, methods=['post'], permission_classes=[IsTeacher])
+    @action(detail=False, methods=['post'], permission_classes=[IsTeacherOrAdmin])
     def open(self, request):
         schedule_id = request.data.get('schedule_id')
         schedule = get_object_or_404(ClassSchedule, id=schedule_id)
         
-        # Check if teacher owns this schedule
-        if schedule.section.instructor != request.user:
+        # Check if teacher owns this schedule (or is admin)
+        if request.user.role == 'teacher' and schedule.section.instructor != request.user:
             return Response({'error': 'Not authorized for this schedule'}, status=status.HTTP_403_FORBIDDEN)
 
         # Check if session already open
@@ -92,7 +95,7 @@ class AttendanceSessionViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(session)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=['post'], permission_classes=[IsTeacher])
+    @action(detail=True, methods=['post'], permission_classes=[IsTeacherOrAdmin])
     def close(self, request, pk=None):
         session = self.get_object()
         if session.closed_at:
@@ -109,7 +112,7 @@ class AttendanceSessionViewSet(viewsets.ModelViewSet):
         serializer = AttendanceRecordSerializer(records, many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=['get'], permission_classes=[IsTeacher])
+    @action(detail=True, methods=['get'], permission_classes=[IsTeacherOrAdmin])
     def monitoring(self, request, pk=None):
         session = self.get_object()
         records = session.records.all().select_related('student__user')

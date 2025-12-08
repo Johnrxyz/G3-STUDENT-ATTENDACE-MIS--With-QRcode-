@@ -39,6 +39,6 @@ export const getSessionMonitoring = async (sessionId) => {
     return axiosPrivate.get(`/attendance/sessions/${sessionId}/monitoring/`);
 };
 
-export const getAdminAnalytics = async () => {
-    return axiosPrivate.get('/analytics/summary/');
+export const getAdminAnalytics = async (axiosInstance = axiosPrivate) => {
+    return axiosInstance.get('/analytics/summary/');
 };

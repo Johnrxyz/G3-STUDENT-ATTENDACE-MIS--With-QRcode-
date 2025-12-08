@@ -18,7 +18,7 @@ const StudentList = () => {
         const fetchData = async () => {
             try {
                 // 1. Fetch Schedule Details
-                const schedRes = await getSchedule(id);
+                const schedRes = await getSchedule(id, axiosPrivate);
                 const schedData = schedRes.data;
                 setSchedule(schedData);
 
