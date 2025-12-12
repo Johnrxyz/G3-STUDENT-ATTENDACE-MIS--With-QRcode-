@@ -217,7 +217,7 @@ const GenerateQR = () => {
                                         <span className="subject-code">{schedule.course_code || schedule.section_name} - {schedule.section_name}</span>
                                         <h4 className="subject-name">{schedule.course_name || 'Class ' + schedule.id}</h4>
                                         <div className="subject-meta">
-                                            {schedule.day_names?.join(', ')} {schedule.start_time}-{schedule.end_time}
+                                            {schedule.day_names?.join(', ')} {formatTime(schedule.start_time)}-{formatTime(schedule.end_time)}
                                         </div>
                                         {selectedSubjectId === schedule.id && <CheckCircle size={20} color="#5465FF" style={{ marginLeft: 'auto' }} />}
                                     </div>
