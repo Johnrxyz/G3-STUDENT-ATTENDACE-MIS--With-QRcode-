@@ -9,10 +9,16 @@ const StudentAttendanceHistory = () => {
     const [loading, setLoading] = useState(true);
     const [currentMonth, setCurrentMonth] = useState(new Date());
 
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth(); // 0-indexed
+
     useEffect(() => {
         const fetchHistory = async () => {
             try {
+                // Fetch all history. Optimally, we should filter by month on backend, 
+                // but currently the API returns all. 
                 const res = await getCalendarHistory();
+                console.log("Attendance History Data:", res.data); // Debug log
                 setHistory(res.data);
                 setLoading(false);
             } catch (err) {
@@ -24,10 +30,10 @@ const StudentAttendanceHistory = () => {
     }, []);
 
     const getDaysInMonth = (date) => {
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const firstDay = new Date(year, month, 1);
-        const lastDay = new Date(year, month + 1, 0);
+        const y = date.getFullYear();
+        const m = date.getMonth();
+        const firstDay = new Date(y, m, 1);
+        const lastDay = new Date(y, m + 1, 0);
         return {
             daysInMonth: lastDay.getDate(),
             startingDayOfWeek: firstDay.getDay()
@@ -37,17 +43,22 @@ const StudentAttendanceHistory = () => {
     const { daysInMonth, startingDayOfWeek } = getDaysInMonth(currentMonth);
     const monthName = currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
-    // Group history by date (YYYY-MM-DD), but we need to map to day number of current month
-    // Events for current month:
-    const year = currentMonth.getFullYear();
-    const month = currentMonth.getMonth(); // 0-indexed
-
+    // Group history by day_number for the current month
+    // The backend returns 'date' (YYYY-MM-DD) and 'day_number'.
     const eventsByDay = {};
+
     history.forEach(item => {
-        const d = new Date(item.date); // 'date' from API
-        if (d.getFullYear() === year && d.getMonth() === month) {
-            const dayNum = d.getDate();
+        // Parse the item date string to check if it belongs to current displayed month
+        // We can just check the string prefix "YYYY-MM" to avoid timezone issues entirely
+        const itemDateStr = item.date; // "YYYY-MM-DD"
+        const currentMonthPrefix = `${year}-${String(month + 1).padStart(2, '0')}`;
+
+        if (itemDateStr && itemDateStr.startsWith(currentMonthPrefix)) {
+            // Use day_number from backend if reliable, or parse from string
+            const dayNum = item.day_number || parseInt(itemDateStr.split('-')[2], 10);
+
             if (!eventsByDay[dayNum]) eventsByDay[dayNum] = [];
+
             eventsByDay[dayNum].push({
                 status: item.status,
                 subject_code: item.subject_code,
@@ -59,7 +70,7 @@ const StudentAttendanceHistory = () => {
     const handlePrevMonth = () => setCurrentMonth(new Date(year, month - 1));
     const handleNextMonth = () => setCurrentMonth(new Date(year, month + 1));
 
-    if (loading) return <div className="p-8 text-center">Loading...</div>;
+    if (loading) return <div className="p-8 text-center">Loading attendance history...</div>;
 
     return (
         <div className="student-attendance-history">
@@ -97,6 +108,18 @@ const StudentAttendanceHistory = () => {
                         </div>
                     );
                 })}
+            </div>
+            {/* Optional: Summary or Legend */}
+            <div className="calendar-legend">
+                <div className="legend-item">
+                    <div className="status-dot present"></div> Present
+                </div>
+                <div className="legend-item">
+                    <div className="status-dot late"></div> Late
+                </div>
+                <div className="legend-item">
+                    <div className="status-dot absent"></div> Absent
+                </div>
             </div>
         </div>
     );
