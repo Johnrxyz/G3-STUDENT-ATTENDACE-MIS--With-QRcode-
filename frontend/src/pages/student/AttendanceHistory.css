@@ -93,3 +93,37 @@
         width: 100%;
     }
 }
+
+/* Legend */
+.calendar-legend {
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    font-size: 0.875rem;
+    color: #4B5563;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.status-dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+}
+
+.status-dot.present {
+    background-color: #10B981;
+}
+
+.status-dot.late {
+    background-color: #F59E0B;
+}
+
+.status-dot.absent {
+    background-color: #EF4444;
+}
